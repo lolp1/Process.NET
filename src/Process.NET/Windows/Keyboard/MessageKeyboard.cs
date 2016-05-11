@@ -22,21 +22,6 @@ namespace Process.NET.Windows.Keyboard
         protected IWindow Window { get; set; }
 
         /// <summary>
-        ///     Releases the specified virtual key to the window.
-        /// </summary>
-        /// <param name="key">The virtual key to release.</param>
-        public virtual void Release(Keys key)
-        {
-            // Create the tuple
-            var tuple = Tuple.Create(Window.Handle, key);
-
-            // If the key is pressed with an interval
-            if (PressedKeys.Contains(tuple))
-                PressedKeys.Remove(tuple);
-            Window.PostMessage(WindowsMessages.KeyUp, new UIntPtr((uint) key), MakeKeyParameter(key, true));
-        }
-
-        /// <summary>
         ///     Presses the specified virtual key to the window at a specified interval.
         /// </summary>
         /// <param name="key">The virtual key to press.</param>
@@ -105,6 +90,21 @@ namespace Process.NET.Windows.Keyboard
         public void Write(char character)
         {
             Window.PostMessage(WindowsMessages.Char, new UIntPtr(character), UIntPtr.Zero);
+        }
+
+        /// <summary>
+        ///     Releases the specified virtual key to the window.
+        /// </summary>
+        /// <param name="key">The virtual key to release.</param>
+        public virtual void Release(Keys key)
+        {
+            // Create the tuple
+            var tuple = Tuple.Create(Window.Handle, key);
+
+            // If the key is pressed with an interval
+            if (PressedKeys.Contains(tuple))
+                PressedKeys.Remove(tuple);
+            Window.PostMessage(WindowsMessages.KeyUp, new UIntPtr((uint) key), MakeKeyParameter(key, true));
         }
 
         /// <summary>

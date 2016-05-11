@@ -48,7 +48,20 @@ namespace Process.NET
         /// </summary>
         IWindowFactory WindowFactory { get; }
 
+        /// <summary>
+        ///     Gets the specified module in the process.
+        /// </summary>
+        /// <param name="moduleName">The name of module.</param>
+        /// <returns><see cref="IProcessModule" />.</returns>
         IProcessModule this[string moduleName] { get; }
-        IPointer this[IntPtr addr] { get; }
+
+        /// <summary>
+        ///     Gets a pointer to the specified address in the process.
+        /// </summary>
+        /// <param name="intPtr">The address pointed.</param>
+        /// <returns>
+        ///     <see cref="IPointer" />
+        /// </returns>
+        IPointer this[IntPtr intPtr] { get; }
     }
 }

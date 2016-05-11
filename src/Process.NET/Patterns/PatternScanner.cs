@@ -67,7 +67,7 @@ namespace Process.NET.Patterns
                     continue;
                 // If this area is reached, the pattern has been found.
                 result.Found = true;
-                result.ReadAddress = _module.Read<IntPtr>(pattern.Offset);
+                result.ReadAddress = _module.Read<IntPtr>(offset + pattern.Offset);
                 result.BaseAddress = new IntPtr(result.ReadAddress.ToInt64() - _module.BaseAddress.ToInt64());
                 result.Offset = offset;
                 return result;
