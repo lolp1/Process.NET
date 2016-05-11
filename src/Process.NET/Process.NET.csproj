@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{501257D3-F788-4A5D-B990-16C01FF71926}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Process.NET</RootNamespace>
+    <AssemblyName>Process.NET</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\Process.NET.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DocumentationFile>bin\Release\Process.NET.XML</DocumentationFile>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Applied\AppliedManager.cs" />
+    <Compile Include="Applied\ComplexAppliedManager.cs" />
+    <Compile Include="Applied\Detours\Detour.cs" />
+    <Compile Include="Applied\Detours\DetourManager.cs" />
+    <Compile Include="Applied\Patches\Patch.cs" />
+    <Compile Include="Applied\Patches\PatchManager.cs" />
+    <Compile Include="Assembly\AssemblyFactory.cs" />
+    <Compile Include="IProcess.cs" />
+    <Compile Include="Patterns\PatternScanner.cs" />
+    <Compile Include="ProcessSharp.cs" />
+    <Compile Include="Windows\Keyboard\KeyboardHookEventArgs.cs" />
+    <Compile Include="Windows\Mouse\MouseHookEventArgs.cs" />
+    <Compile Include="Patterns\IPatternScanner.cs" />
+    <Compile Include="Memory\IMemoryFactory.cs" />
+    <Compile Include="Memory\MemoryFactory.cs" />
+    <Compile Include="Memory\MemoryProtection.cs" />
+    <Compile Include="Memory\MemoryProtectionOperation.cs" />
+    <Compile Include="Memory\AllocatedMemory.cs" />
+    <Compile Include="Memory\MemoryPointer.cs" />
+    <Compile Include="Memory\MemoryRegion.cs" />
+    <Compile Include="Modules\InjectedModule.cs" />
+    <Compile Include="Modules\ModuleFactory.cs" />
+    <Compile Include="Modules\RemoteFunction.cs" />
+    <Compile Include="Modules\RemoteModule.cs" />
+    <Compile Include="Patterns\DwordPattern.cs" />
+    <Compile Include="Patterns\IMemoryPattern.cs" />
+    <Compile Include="Patterns\MemoryPatternType.cs" />
+    <Compile Include="Patterns\PatternScanResult.cs" />
+    <Compile Include="Threads\IFrozenThread.cs" />
+    <Compile Include="Threads\RemoteThread.cs" />
+    <Compile Include="Threads\ThreadFactory.cs" />
+    <Compile Include="Utilities\AttributeExtensions.cs" />
+    <Compile Include="Windows\HookEventArgs.cs" />
+    <Compile Include="Windows\Mouse\MouseHook.cs" />
+    <Compile Include="Windows\Keyboard\KeyboardHook.cs" />
+    <Compile Include="Utilities\Randomizer.cs" />
+    <Compile Include="Utilities\Singleton.cs" />
+    <Compile Include="Assembly\AssemblyTransaction.cs" />
+    <Compile Include="Assembly\Assemblers\IAssembler.cs" />
+    <Compile Include="Assembly\IAssemblyFactory.cs" />
+    <Compile Include="Assembly\IAssemblyTransaction.cs" />
+    <Compile Include="Assembly\CallingConventions\ICallingConvention.cs" />
+    <Compile Include="Assembly\CallingConventions\CallingConventionSelector.cs" />
+    <Compile Include="Assembly\CallingConventions\CdeclCallingConvention.cs" />
+    <Compile Include="Assembly\CallingConventions\FastcallCallingConvention.cs" />
+    <Compile Include="Assembly\CallingConventions\StdcallCallingConvention.cs" />
+    <Compile Include="Assembly\CallingConventions\ThiscallCallingConvention.cs" />
+    <Compile Include="Memory\LocalUnmanagedMemory.cs" />
+    <Compile Include="Marshaling\IMarshalledValue.cs" />
+    <Compile Include="Utilities\ProcessHelper.cs" />
+    <Compile Include="Marshaling\MarshalCache.cs" />
+    <Compile Include="Marshaling\MarshalledValue.cs" />
+    <Compile Include="Marshaling\MarshalType.cs" />
+    <Compile Include="Marshaling\MarshalValue.cs" />
+    <Compile Include="Memory\IAllocatedMemory.cs" />
+    <Compile Include="Memory\IPointer.cs" />
+    <Compile Include="Memory\IMemory.cs" />
+    <Compile Include="Modules\IModuleFactory.cs" />
+    <Compile Include="Modules\IProcessFunction.cs" />
+    <Compile Include="Modules\IProcessModule.cs" />
+    <Compile Include="Applied\IApplied.cs" />
+    <Compile Include="Applied\IAppliedManager.cs" />
+    <Compile Include="Applied\IComplexApplied.cs" />
+    <Compile Include="Applied\IComplexAppliedManager.cs" />
+    <Compile Include="Marshaling\IDisposableState.cs" />
+    <Compile Include="Threads\FrozenThread.cs" />
+    <Compile Include="Threads\IRemoteThread.cs" />
+    <Compile Include="Threads\IThreadFactory.cs" />
+    <Compile Include="Utilities\UnsafeMemoryExtensions.cs" />
+    <Compile Include="Windows\Keyboard\IKeyboard.cs" />
+    <Compile Include="Windows\Mouse\IMouse.cs" />
+    <Compile Include="Windows\IWindow.cs" />
+    <Compile Include="Windows\IWindowFactory.cs" />
+    <Compile Include="Native\Advapi32.cs" />
+    <Compile Include="Native\Kernel32.cs" />
+    <Compile Include="Native\Nt.cs" />
+    <Compile Include="Native\Callbacks.cs" />
+    <Compile Include="Native\Types\NativeEnums.cs" />
+    <Compile Include="Native\Types\NativeStructs.cs" />
+    <Compile Include="Native\Types\SafeLoadLibrary.cs" />
+    <Compile Include="Native\Types\SafeMemoryHandle.cs" />
+    <Compile Include="Native\User32.cs" />
+    <Compile Include="Utilities\HandleManipulator.cs" />
+    <Compile Include="Utilities\MemoryHelper.cs" />
+    <Compile Include="Utilities\ModuleHelper.cs" />
+    <Compile Include="Utilities\ThreadHelper.cs" />
+    <Compile Include="Utilities\WindowHelper.cs" />
+    <Compile Include="Windows\Keyboard\MessageKeyboard.cs" />
+    <Compile Include="Windows\RemoteWindow.cs" />
+    <Compile Include="Windows\Mouse\SendInputMouse.cs" />
+    <Compile Include="Windows\WindowFactory.cs" />
+    <Compile Include="Windows\WndProcEventArgs.cs" />
+    <Compile Include="Windows\WndProcHook.cs" />
+    <Compile Include="LocalProcessMemory.cs" />
+    <Compile Include="ProcessMemory.cs" />
+    <Compile Include="ExternalProcessMemory.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
