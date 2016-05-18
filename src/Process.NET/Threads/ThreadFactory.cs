@@ -93,7 +93,8 @@ namespace Process.NET.Threads
                     ThreadCreationFlags.Suspended));
 
             // Find the managed object corresponding to this thread
-            var result = new RemoteThread(Process, NativeThreads.First(t => t.Id == ret.ThreadId),
+            // TODO (int) cast may be unnecessary and/or problematic. Suggest coming back for proper fix later
+            var result = new RemoteThread(Process, NativeThreads.First(t => t.Id == (int)ret.ClientId.UniqueThread),
                 marshalledParameter);
 
             // If the thread must be started
@@ -119,7 +120,8 @@ namespace Process.NET.Threads
                     ThreadCreationFlags.Suspended));
 
             // Find the managed object corresponding to this thread
-            var result = new RemoteThread(Process, NativeThreads.First(t => t.Id == ret.ThreadId));
+            // TODO (int) cast may be unnecessary and/or problematic. Suggest coming back for proper fix later
+            var result = new RemoteThread(Process, NativeThreads.First(t => t.Id == (int)ret.ClientId.UniqueThread));
 
             // If the thread must be started
             if (isStarted)
