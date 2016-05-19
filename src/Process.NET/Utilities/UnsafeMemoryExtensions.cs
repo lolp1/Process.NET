@@ -5,6 +5,12 @@ namespace Process.NET.Utilities
 {
     public static class UnsafeMemoryExtensions
     {
+        // TODO add summary to this
+        public static IntPtr GetVtableIntPtr(this IntPtr intPtr, int functionIndex)
+        {
+            var vftable = MemoryHelper.InternalRead<IntPtr>(intPtr);
+            return MemoryHelper.InternalRead<IntPtr>(vftable + functionIndex * IntPtr.Size);
+        }
         /// <summary>
         ///     Converts an unmanaged delegate to a function pointer.
         /// </summary>

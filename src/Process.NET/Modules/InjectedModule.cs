@@ -73,9 +73,19 @@ namespace Process.NET.Modules
             var thread = memorySharp.ThreadFactory.CreateAndJoin(memorySharp["kernel32"]["LoadLibraryA"].BaseAddress,
                 path);
             // Get the inject module
-            if (thread.GetExitCode<IntPtr>() != IntPtr.Zero)
-                return new InjectedModule(memorySharp,
-                    memorySharp.ModuleFactory.NativeModules.First(m => m.BaseAddress == thread.GetExitCode<IntPtr>()));
+            if (IntPtr.Size == 4)
+            {
+                if (thread.GetExitCode<IntPtr>() != IntPtr.Zero)
+                    return new InjectedModule(memorySharp,
+                        memorySharp.ModuleFactory.NativeModules.First(m => m.BaseAddress == thread.GetExitCode<IntPtr>()));
+            }
+            else if (IntPtr.Size == 8)
+            {
+                // GetExitCode is not accurate on x64, it returns a DWORD so result is truncated
+                // This is a crude method, and probably shouldnt be relied upon.
+                if (thread.GetExitCode<IntPtr>() != IntPtr.Zero)
+                    return new InjectedModule(memorySharp, memorySharp.ModuleFactory.NativeModules.First(m => m.FileName == path));
+            }
             return null;
         }
     }
