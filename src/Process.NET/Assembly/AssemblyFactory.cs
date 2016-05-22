@@ -127,9 +127,15 @@ namespace Process.NET.Assembly
         public T Execute<T>(IntPtr address, Native.Types.CallingConventions callingConvention,
             params dynamic[] parameters)
         {
+            // If we didn't attach an assembler, then this method will fail horribly
+            if (Assembler == null)
+                throw new NullReferenceException("No assembler supplied, method cannot continue");
+
+
             // Marshal the parameters
             var marshalledParameters =
                 parameters.Select(p => MarshalValue.Marshal(Process, p)).Cast<IMarshalledValue>().ToArray();
+
             // Start a transaction
             AssemblyTransaction t;
             using (t = BeginTransaction())

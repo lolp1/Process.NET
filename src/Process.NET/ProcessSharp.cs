@@ -87,6 +87,7 @@ namespace Process.NET
         /// </summary>
         public virtual void Dispose()
         {
+            // TODO Consider adding a null check here, or a nasty crash deadlock can make it in here occasionally.
             ThreadFactory.Dispose();
             ModuleFactory.Dispose();
             MemoryFactory.Dispose();
