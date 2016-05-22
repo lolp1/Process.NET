@@ -79,6 +79,12 @@ namespace Process.NET.Native
         [DllImport("kernel32.dll")]
         public static extern int GetCurrentThreadId();
 
+        [DllImport("kernel32")]
+        public static extern bool AllocConsole();
+
+        [DllImport("kernel32.dll", SetLastError = true, ExactSpelling = true)]
+        public static extern bool FreeConsole();
+
         [DllImport("Kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = false)]
         public static extern unsafe void MoveMemory(void* dest, void* src, int size);
 

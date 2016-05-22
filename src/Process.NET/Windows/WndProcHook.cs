@@ -31,8 +31,9 @@ namespace Process.NET.Windows
         {
             _newCallback = WndProc;
 
-            _oldCallback = Kernel32.SetWindowLongPtr(Handle, GWL_WNDPROC,
-                Marshal.GetFunctionPointerForDelegate(_newCallback));
+            IntPtr fptr = Marshal.GetFunctionPointerForDelegate(_newCallback);
+
+            _oldCallback = Kernel32.SetWindowLongPtr(Handle, GWL_WNDPROC, fptr);
 
             if (_oldCallback == IntPtr.Zero)
                 throw new Win32Exception(Marshal.GetLastWin32Error());
