@@ -100,7 +100,7 @@ namespace Process.NET.Utilities
         /// <param name="threadHandle">A handle to the thread containing the specified selector.</param>
         /// <param name="selector">The global or local selector value to look up in the thread's descriptor tables.</param>
         /// <returns>A pointer to an <see cref="LdtEntry" /> structure that receives a copy of the descriptor table entry.</returns>
-        public static LdtEntry GetThreadSelectorEntry(SafeMemoryHandle threadHandle, uint selector)
+        public static LdtEntry GetThreadSelectorEntry(SafeMemoryHandle threadHandle, int selector)
         {
             // Check if the handle is valid
             HandleManipulator.ValidateAsArgument(threadHandle, "threadHandle");
@@ -164,7 +164,7 @@ namespace Process.NET.Utilities
         /// </summary>
         /// <param name="threadHandle">A handle to the thread to be restarted.</param>
         /// <returns>The thread's previous suspend count.</returns>
-        public static uint ResumeThread(SafeMemoryHandle threadHandle)
+        public static int ResumeThread(SafeMemoryHandle threadHandle)
         {
             // Check if the handle is valid
             HandleManipulator.ValidateAsArgument(threadHandle, "threadHandle");
@@ -173,7 +173,7 @@ namespace Process.NET.Utilities
             var ret = Kernel32.ResumeThread(threadHandle);
 
             // If the function failed
-            if (ret == uint.MaxValue)
+            if (ret == int.MaxValue)
                 throw new Win32Exception("Couldn't resume the thread.");
 
             return ret;
@@ -202,7 +202,7 @@ namespace Process.NET.Utilities
         /// </summary>
         /// <param name="threadHandle">A handle to the thread that is to be suspended.</param>
         /// <returns>The thread's previous suspend count.</returns>
-        public static uint SuspendThread(SafeMemoryHandle threadHandle)
+        public static int SuspendThread(SafeMemoryHandle threadHandle)
         {
             // Check if the handle is valid
             HandleManipulator.ValidateAsArgument(threadHandle, "threadHandle");
@@ -211,7 +211,7 @@ namespace Process.NET.Utilities
             var ret = Kernel32.SuspendThread(threadHandle);
 
             // If the function failed
-            if (ret == uint.MaxValue)
+            if (ret == int.MaxValue)
                 throw new Win32Exception("Couldn't suspend the thread.");
 
             return ret;

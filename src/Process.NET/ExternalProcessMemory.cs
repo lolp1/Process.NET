@@ -24,7 +24,7 @@ namespace Process.NET
         ///     Writes a set of bytes to memory.
         /// </summary>
         /// <param name="intPtr">The address where the bytes start in memory.</param>
-        /// <param name="length">The slength of the byte chunk to read from the memory address.</param>
+        /// <param name="length">The length of the byte chunk to read from the memory address.</param>
         /// <returns>
         ///     The byte array section read from memory.
         /// </returns>

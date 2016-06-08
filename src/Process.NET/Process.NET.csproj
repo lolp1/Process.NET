@@ -90,10 +90,14 @@
     <Compile Include="Applied\Patches\Patch.cs" />
     <Compile Include="Applied\Patches\PatchManager.cs" />
     <Compile Include="Assembly\AssemblyFactory.cs" />
+    <Compile Include="Extensions\ProcessExtensions.cs" />
+    <Compile Include="Extensions\ProcessModuleExtensions.cs" />
     <Compile Include="IProcess.cs" />
     <Compile Include="Patterns\PatternScanner.cs" />
     <Compile Include="ProcessSharp.cs" />
+    <Compile Include="Extensions\NativeExtensions.cs" />
     <Compile Include="Windows\Keyboard\KeyboardHookEventArgs.cs" />
+    <Compile Include="Windows\Message.cs" />
     <Compile Include="Windows\Mouse\MouseHookEventArgs.cs" />
     <Compile Include="Patterns\IPatternScanner.cs" />
     <Compile Include="Memory\IMemoryFactory.cs" />
@@ -114,7 +118,7 @@
     <Compile Include="Threads\IFrozenThread.cs" />
     <Compile Include="Threads\RemoteThread.cs" />
     <Compile Include="Threads\ThreadFactory.cs" />
-    <Compile Include="Utilities\AttributeExtensions.cs" />
+    <Compile Include="Extensions\AttributeExtensions.cs" />
     <Compile Include="Windows\HookEventArgs.cs" />
     <Compile Include="Windows\Mouse\MouseHook.cs" />
     <Compile Include="Windows\Keyboard\KeyboardHook.cs" />
@@ -151,7 +155,7 @@
     <Compile Include="Threads\FrozenThread.cs" />
     <Compile Include="Threads\IRemoteThread.cs" />
     <Compile Include="Threads\IThreadFactory.cs" />
-    <Compile Include="Utilities\UnsafeMemoryExtensions.cs" />
+    <Compile Include="Extensions\UnsafeMemoryExtensions.cs" />
     <Compile Include="Windows\Keyboard\IKeyboard.cs" />
     <Compile Include="Windows\Mouse\IMouse.cs" />
     <Compile Include="Windows\IWindow.cs" />

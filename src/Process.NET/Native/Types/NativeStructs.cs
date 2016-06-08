@@ -10,18 +10,18 @@ namespace Process.NET.Native.Types
     {
         public Point Point { get; set; }
         public int MouseData { get; set; }
-        public uint Flags { get; set; }
-        public uint Time { get; set; }
+        public int Flags { get; set; }
+        public int Time { get; set; }
         public IntPtr DwExtraInfo { get; set; }
     }
 
     [StructLayout(LayoutKind.Sequential)]
     public struct KBDLLHOOKSTRUCT
     {
-        public uint vkCode;
-        public uint scanCode;
-        public uint flags;
-        public uint time;
+        public int vkCode;
+        public int scanCode;
+        public int flags;
+        public int time;
         public IntPtr extraInfo;
     }
 
@@ -29,7 +29,7 @@ namespace Process.NET.Native.Types
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public struct TOKEN_PRIVILEGES
     {
-        public uint PrivilegeCount;
+        public int PrivilegeCount;
         public LUID Luid;
         public PrivilegeAttributes Attributes;
     }
@@ -38,7 +38,7 @@ namespace Process.NET.Native.Types
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public struct LUID
     {
-        public uint LowPart;
+        public int LowPart;
         public int HighPart;
     }
 
@@ -51,7 +51,7 @@ namespace Process.NET.Native.Types
         public int Size;
         public IntPtr Hwnd;
         public FlashWindowFlags Flags;
-        public uint Count;
+        public int Count;
         public int Timeout;
     }
 
@@ -337,7 +337,7 @@ namespace Process.NET.Native.Types
         /// <summary>
         ///     The exit status.
         /// </summary>
-        public uint ExitStatus;
+        public int ExitStatus;
 
         /// <summary>
         ///     The base address of Process Environment Block.
@@ -347,12 +347,12 @@ namespace Process.NET.Native.Types
         /// <summary>
         ///     The affinity mask.
         /// </summary>
-        public uint AffinityMask;
+        public int AffinityMask;
 
         /// <summary>
         ///     The base priority.
         /// </summary>
-        public uint BasePriority;
+        public int BasePriority;
 
         /// <summary>
         ///     The process id.
@@ -422,13 +422,13 @@ namespace Process.NET.Native.Types
     public struct SystemInfo
     {
         public ProcessorArchitecture ProcessorArchitecture; // WORD
-        public uint PageSize; // DWORD
+        public int PageSize; // DWORD
         public IntPtr MinimumApplicationAddress; // (long)void*
         public IntPtr MaximumApplicationAddress; // (long)void*
         public IntPtr ActiveProcessorMask; // DWORD*
-        public uint NumberOfProcessors; // DWORD (WTF)
-        public uint ProcessorType; // DWORD
-        public uint AllocationGranularity; // DWORD
+        public int NumberOfProcessors; // DWORD (WTF)
+        public int ProcessorType; // DWORD
+        public int AllocationGranularity; // DWORD
         public ushort ProcessorLevel; // WORD
         public ushort ProcessorRevision; // WORD
     }
@@ -456,37 +456,37 @@ namespace Process.NET.Native.Types
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
         ///     <see cref="ThreadContextFlags.DebugRegisters" />.
         /// </summary>
-        public uint Dr0;
+        public int Dr0;
 
         /// <summary>
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
         ///     <see cref="ThreadContextFlags.DebugRegisters" />.
         /// </summary>
-        public uint Dr1;
+        public int Dr1;
 
         /// <summary>
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
         ///     <see cref="ThreadContextFlags.DebugRegisters" />.
         /// </summary>
-        public uint Dr2;
+        public int Dr2;
 
         /// <summary>
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
         ///     <see cref="ThreadContextFlags.DebugRegisters" />.
         /// </summary>
-        public uint Dr3;
+        public int Dr3;
 
         /// <summary>
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
         ///     <see cref="ThreadContextFlags.DebugRegisters" />.
         /// </summary>
-        public uint Dr6;
+        public int Dr6;
 
         /// <summary>
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
         ///     <see cref="ThreadContextFlags.DebugRegisters" />.
         /// </summary>
-        public uint Dr7;
+        public int Dr7;
 
         /// <summary>
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
@@ -498,97 +498,97 @@ namespace Process.NET.Native.Types
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
         ///     <see cref="ThreadContextFlags.Segments" />.
         /// </summary>
-        public uint SegGs;
+        public int SegGs;
 
         /// <summary>
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
         ///     <see cref="ThreadContextFlags.Segments" />.
         /// </summary>
-        public uint SegFs;
+        public int SegFs;
 
         /// <summary>
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
         ///     <see cref="ThreadContextFlags.Segments" />.
         /// </summary>
-        public uint SegEs;
+        public int SegEs;
 
         /// <summary>
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
         ///     <see cref="ThreadContextFlags.Segments" />.
         /// </summary>
-        public uint SegDs;
+        public int SegDs;
 
         /// <summary>
         ///     This register is specified/returned if the ContextFlags word contains the flag
         ///     <see cref="ThreadContextFlags.Integer" />.
         /// </summary>
-        public uint Edi;
+        public int Edi;
 
         /// <summary>
         ///     This register is specified/returned if the ContextFlags word contains the flag
         ///     <see cref="ThreadContextFlags.Integer" />.
         /// </summary>
-        public uint Esi;
+        public int Esi;
 
         /// <summary>
         ///     This register is specified/returned if the ContextFlags word contains the flag
         ///     <see cref="ThreadContextFlags.Integer" />.
         /// </summary>
-        public uint Ebx;
+        public int Ebx;
 
         /// <summary>
         ///     This register is specified/returned if the ContextFlags word contains the flag
         ///     <see cref="ThreadContextFlags.Integer" />.
         /// </summary>
-        public uint Edx;
+        public int Edx;
 
         /// <summary>
         ///     This register is specified/returned if the ContextFlags word contains the flag
         ///     <see cref="ThreadContextFlags.Integer" />.
         /// </summary>
-        public uint Ecx;
+        public int Ecx;
 
         /// <summary>
         ///     This register is specified/returned if the ContextFlags word contains the flag
         ///     <see cref="ThreadContextFlags.Integer" />.
         /// </summary>
-        public uint Eax;
+        public int Eax;
 
         /// <summary>
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
         ///     <see cref="ThreadContextFlags.Control" />.
         /// </summary>
-        public uint Ebp;
+        public int Ebp;
 
         /// <summary>
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
         ///     <see cref="ThreadContextFlags.Control" />.
         /// </summary>
-        public uint Eip;
+        public int Eip;
 
         /// <summary>
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
         ///     <see cref="ThreadContextFlags.Control" />.
         /// </summary>
-        public uint SegCs;
+        public int SegCs;
 
         /// <summary>
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
         ///     <see cref="ThreadContextFlags.Control" />.
         /// </summary>
-        public uint EFlags;
+        public int EFlags;
 
         /// <summary>
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
         ///     <see cref="ThreadContextFlags.Control" />.
         /// </summary>
-        public uint Esp;
+        public int Esp;
 
         /// <summary>
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
         ///     <see cref="ThreadContextFlags.Control" />.
         /// </summary>
-        public uint SegSs;
+        public int SegSs;
 
         /// <summary>
         ///     This is specified/returned if <see cref="ContextFlags" /> contains the flag
@@ -604,15 +604,15 @@ namespace Process.NET.Native.Types
     [StructLayout(LayoutKind.Sequential)]
     public struct FloatingSaveArea
     {
-        public uint ControlWord;
-        public uint StatusWord;
-        public uint TagWord;
-        public uint ErrorOffset;
-        public uint ErrorSelector;
-        public uint DataOffset;
-        public uint DataSelector;
+        public int ControlWord;
+        public int StatusWord;
+        public int TagWord;
+        public int ErrorOffset;
+        public int ErrorSelector;
+        public int DataOffset;
+        public int DataSelector;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 80)] public byte[] RegisterArea;
-        public uint Cr0NpxState;
+        public int Cr0NpxState;
     }
 
     /// <summary>

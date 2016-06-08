@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace Process.NET.Utilities
+namespace Process.NET.Extensions
 {
     public static class AttributeExtensions
     {

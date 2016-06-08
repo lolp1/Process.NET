@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Process.NET.Extensions;
 using Process.NET.Memory;
 using Process.NET.Native.Types;
 using Process.NET.Utilities;
@@ -125,7 +126,7 @@ namespace Process.NET.Modules
                 }
 
                 // Get the offset of the function
-                var offset = ModuleHelper.GetProcAddress(localModule, functionName).ToInt64() -
+                var offset = localModule.GetProcAddress(functionName).ToInt64() -
                              localModule.BaseAddress.ToInt64();
 
                 // Rebase the function with the remote module
@@ -142,7 +143,7 @@ namespace Process.NET.Modules
             {
                 // Free the module if it was manually loaded
                 if (isManuallyLoaded)
-                    ModuleHelper.FreeLibrary(localModule);
+                    localModule.FreeLibrary();
             }
         }
 

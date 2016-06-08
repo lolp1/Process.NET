@@ -105,13 +105,13 @@ namespace Process.NET.Native.Types
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public enum PrivilegeAttributes : uint
+    public enum PrivilegeAttributes
     {
         SE_PRIVILEGE_ENABLED = 0x00000002
     }
 
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public enum TokenObject : uint
+    public enum TokenObject
     {
         TOKEN_QUERY = 0x0008,
         TOKEN_QUERY_SOURCE = 0x0010,
@@ -1489,10 +1489,11 @@ namespace Process.NET.Native.Types
         Failed = 0xFFFFFFFF
     }
 
+
     /// <summary>
     ///     Windows Messages list.
     /// </summary>
-    public enum WindowsMessages : uint
+    public enum WindowsMessages
     {
         /// <summary>
         ///     The WM_NULL message performs no operation. An application sends the WM_NULL message if it wants to post a message

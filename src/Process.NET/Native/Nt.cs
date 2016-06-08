@@ -61,7 +61,7 @@ namespace Process.NET.Native
         /// </param>
         /// <returns>Returns an NTSTATUS success or error code. (STATUS_SUCCESS = 0x0).</returns>
         [DllImport("ntdll.dll")]
-        public static extern uint NtQueryInformationThread(SafeMemoryHandle hwnd, uint infoclass,
+        public static extern int NtQueryInformationThread(SafeMemoryHandle hwnd, int infoclass,
             ref ThreadBasicInformation threadinfo, int length, IntPtr bytesread);
     }
 }

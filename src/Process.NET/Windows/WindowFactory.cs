@@ -11,6 +11,7 @@ namespace Process.NET.Windows
     public class WindowFactory : IWindowFactory
     {
         private readonly IProcess _process;
+        private IWindow _mainWindow;
 
         /// <summary>
         ///     Initializes a new instance of the <see cref="WindowFactory" /> class.
@@ -46,9 +47,23 @@ namespace Process.NET.Windows
         }
 
         /// <summary>
-        ///     Gets the main window of the application.
+        ///     Gets the main window of the application. 
         /// </summary>
-        public IWindow MainWindow => new RemoteWindow(_process, MainWindowHandle);
+        /// <remarks>
+        /// If your applications main window has child windows as well, this will not always work.In this case, 
+        /// you can set the main window property and it will use that value instead from that point
+        /// on. You can set the value to null if you would like the return return value to go back to default. If your applications main window has child windows as well, this will not
+        /// always work. In this case, you can set the main window property and it will use that value instead from that point
+        ///  on. You can set the value to null if you would like the return return value to go back to default.
+        /// </remarks>
+        public IWindow MainWindow
+        {
+            get
+            {
+                return _mainWindow ?? new RemoteWindow(_process, MainWindowHandle);
+            }
+            set { _mainWindow = value; }
+        }
 
         /// <summary>
         ///     Gets all the windows that have the same specified title.

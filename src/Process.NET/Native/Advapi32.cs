@@ -21,7 +21,7 @@ namespace Process.NET.Native
         public static extern bool AdjustTokenPrivileges(IntPtr tokenHandle,
             [MarshalAs(UnmanagedType.Bool)] bool disableAllPrivileges,
             ref TOKEN_PRIVILEGES newState,
-            uint zero,
+            int zero,
             IntPtr null1,
             IntPtr null2);
     }

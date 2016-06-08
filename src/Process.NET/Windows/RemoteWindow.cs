@@ -193,7 +193,7 @@ namespace Process.NET.Windows
         /// </summary>
         public void Close()
         {
-            PostMessage(WindowsMessages.Close, UIntPtr.Zero, UIntPtr.Zero);
+            PostMessage(WindowsMessages.Close, IntPtr.Zero, IntPtr.Zero);
         }
 
         /// <summary>
@@ -210,12 +210,12 @@ namespace Process.NET.Windows
         /// <param name="count">The number of times to flash the window.</param>
         /// <param name="timeout">The rate at which the window is to be flashed.</param>
         /// <param name="flags">The flash status.</param>
-        public void Flash(uint count, TimeSpan timeout, FlashWindowFlags flags = FlashWindowFlags.All)
+        public void Flash(int count, TimeSpan timeout, FlashWindowFlags flags = FlashWindowFlags.All)
         {
             WindowHelper.FlashWindowEx(Handle, flags, count, timeout);
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
         }
 
@@ -226,7 +226,7 @@ namespace Process.NET.Windows
         /// <param name="message">The message to be posted.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
-        public void PostMessage(WindowsMessages message, UIntPtr wParam, UIntPtr lParam)
+        public void PostMessage(WindowsMessages message, IntPtr wParam, IntPtr lParam)
         {
             WindowHelper.PostMessage(Handle, message, wParam, lParam);
         }
@@ -238,7 +238,7 @@ namespace Process.NET.Windows
         /// <param name="message">The message to be posted.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
-        public void PostMessage(uint message, UIntPtr wParam, UIntPtr lParam)
+        public void PostMessage(int message, IntPtr wParam, IntPtr lParam)
         {
             WindowHelper.PostMessage(Handle, message, wParam, lParam);
         }
@@ -252,7 +252,7 @@ namespace Process.NET.Windows
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
         /// <returns>The return value specifies the result of the message processing; it depends on the message sent.</returns>
-        public IntPtr SendMessage(WindowsMessages message, UIntPtr wParam, IntPtr lParam)
+        public IntPtr SendMessage(WindowsMessages message, IntPtr wParam, IntPtr lParam)
         {
             return WindowHelper.SendMessage(Handle, message, wParam, lParam);
         }
@@ -266,7 +266,7 @@ namespace Process.NET.Windows
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
         /// <returns>The return value specifies the result of the message processing; it depends on the message sent.</returns>
-        public IntPtr SendMessage(uint message, UIntPtr wParam, IntPtr lParam)
+        public IntPtr SendMessage(int message, IntPtr wParam, IntPtr lParam)
         {
             return WindowHelper.SendMessage(Handle, message, wParam, lParam);
         }

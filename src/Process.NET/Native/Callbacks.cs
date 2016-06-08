@@ -16,5 +16,5 @@ namespace Process.NET.Native
 
     public delegate bool EnumWindowsProc(IntPtr hWnd, IntPtr lParam);
 
-    public delegate IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+    public delegate IntPtr WndProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 }

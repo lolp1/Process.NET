@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using Process.NET.Extensions;
 using Process.NET.Native;
 using Process.NET.Native.Types;
+using ProcessModule = System.Diagnostics.ProcessModule;
+using ProcessThread = System.Diagnostics.ProcessThread;
 using SystemProcess = System.Diagnostics.Process;
 
 namespace Process.NET.Utilities
@@ -22,6 +24,26 @@ namespace Process.NET.Utilities
         ///     Gets all the windows on the screen.
         /// </summary>
         public static IEnumerable<IntPtr> Windows => WindowHelper.EnumAllWindows();
+
+        /// <summary>
+        ///     Gets the first process found matching the process name.
+        /// </summary>
+        /// <param name="processName">Name of the process.</param>
+        /// <returns>IntPtr.</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IntPtr GetMainWindowHandle(string processName)
+        {
+            var firstOrDefault = SystemProcess.GetProcessesByName(processName);
+
+            var process = firstOrDefault.FirstOrDefault();
+
+            if (process == null)
+            {
+                throw new ArgumentNullException(nameof(process));
+            }
+
+            return process.MainWindowHandle;
+        }
 
         /// <summary>
         ///     Returns a new <see cref="System.Diagnostics.Process" /> component, given the identifier of a process.
@@ -93,68 +115,64 @@ namespace Process.NET.Utilities
                     .Select(FromWindowHandle);
         }
 
-        public static IEnumerable<SystemProcess> FindProcessesByInternalName(string name)
+        public static IEnumerable<SystemProcess> CollectFromInternalName(string name)
         {
-            var processes = new List<SystemProcess>(SystemProcess.GetProcesses());
-            return processes.Where(process =>
-            {
-                try
-                {
-                    return Kernel32.Is32BitProcess(process.Handle) &&
-                           process.MainModule.FileVersionInfo.InternalName != null &&
-                           process.MainModule.FileVersionInfo.InternalName.ToLower() == name.ToLower();
-                }
-                catch (Win32Exception)
-                {
-                    return false;
-                }
-            });
+            return
+                SystemProcess.GetProcesses()
+                    .ToArray()
+                    .Where(
+                        process =>
+                            !string.IsNullOrEmpty(process.MainModule.FileVersionInfo.InternalName) &&
+                            string.Equals(process.MainModule.FileVersionInfo.InternalName, name,
+                                StringComparison.CurrentCultureIgnoreCase));
         }
+
 
         public static IEnumerable<SystemProcess> FindProcessesByProductName(string name)
         {
             var processes = new List<SystemProcess>(SystemProcess.GetProcesses());
-            return processes.Where(process => Kernel32.Is32BitProcess(process.Handle) &&
-                                              process.MainModule.FileVersionInfo.ProductName != null &&
-                                              string.Equals(process.MainModule.FileVersionInfo.ProductName, name,
-                                                  StringComparison.CurrentCultureIgnoreCase));
+            return processes.Where(process =>
+                !string.IsNullOrEmpty(process.MainModule.FileVersionInfo.ProductName) &&
+                string.Equals(process.MainModule.FileVersionInfo.ProductName, name,
+                    StringComparison.CurrentCultureIgnoreCase));
         }
 
-        public static List<SystemProcess> FindProcessesByName(string name)
+        public static SystemProcess FromName(string name)
         {
-            var processes = new List<SystemProcess>(SystemProcess.GetProcessesByName(name));
-            return processes.Where(process => Kernel32.Is32BitProcess(process.Handle)).ToList();
+            var firstOrDefault = SystemProcess.GetProcessesByName(name);
+
+            var process = firstOrDefault.FirstOrDefault();
+
+            if (process == null)
+            {
+                throw new ArgumentNullException(nameof(process));
+            }
+
+            return process;
         }
 
-        public static SystemProcess FindProcessByName(string name)
+        public static SystemProcess GetByInternalName(string name)
         {
-            var processes = FindProcessesByName(name);
-            return processes.Count == 0 ? null : processes[0];
+            return CollectFromInternalName(name).FirstOrDefault();
         }
 
-        public static SystemProcess FindProcessByInternalName(string name)
+        public static SystemProcess GetByProductName(string name)
         {
-            var processes = FindProcessesByInternalName(name).ToList();
-            return processes.Count == 0 ? null : processes[0];
+            using (var firstOrDefault = FindProcessesByProductName(name).FirstOrDefault())
+            {
+                if (firstOrDefault == null)
+                {
+                    throw new NullReferenceException($"Process {name} not found.");
+                }
+                return firstOrDefault;
+            }
         }
 
-        public static SystemProcess FindProcessByProductName(string name)
-        {
-            var processes = FindProcessesByProductName(name).ToList();
-            return processes.Count == 0 ? null : processes[0];
-        }
-
-        public static string GetVersionInfo(SystemProcess process)
-        {
-            return
-                $"{process.MainModule.FileVersionInfo.FileDescription} {process.MainModule.FileVersionInfo.FileMajorPart}.{process.MainModule.FileVersionInfo.FileMinorPart}.{process.MainModule.FileVersionInfo.FileBuildPart} {process.MainModule.FileVersionInfo.FilePrivatePart}";
-        }
-
-        public static SystemProcess SelectProcess(string internalName)
+        public static SystemProcess SelectFromName(string internalName)
         {
             for (;;)
             {
-                var processList = FindProcessesByInternalName(internalName).ToList();
+                var processList = CollectFromInternalName(internalName).ToList();
                 if (processList.Count == 0)
                     throw new Exception($"No '{internalName}' processes found");
 
@@ -168,11 +186,8 @@ namespace Process.NET.Utilities
                         var debugging = false;
                         Kernel32.CheckRemoteDebuggerPresent(processList[i].Handle, ref debugging);
 
-                        Console.WriteLine("[{0}] {1} PID: {2} {3}",
-                            i,
-                            GetVersionInfo(processList[i]),
-                            processList[i].Id,
-                            debugging ? "(Already debugging)" : "");
+                        Console.WriteLine(
+                            $"[{i}] {processList[i].GetVersionInfo()} PID: {processList[i].Id} {(debugging ? "(Already debugging)" : "")}");
                     }
 
                     Console.WriteLine();

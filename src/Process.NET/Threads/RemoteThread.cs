@@ -12,7 +12,7 @@ using ThreadState = System.Diagnostics.ThreadState;
 namespace Process.NET.Threads
 {
     /// <summary>
-    ///     Class repesenting a thread in the remote process.
+    ///     Class representing a thread in the remote process.
     /// </summary>
     public class RemoteThread : IEquatable<RemoteThread>, IRemoteThread
     {

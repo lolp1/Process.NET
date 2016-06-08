@@ -1,8 +1,13 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
+using System.Security;
 using Process.NET.Applied;
+using Process.NET.Extensions;
+using Process.NET.Marshaling;
 using Process.NET.Native;
+using Process.NET.Utilities;
 
 namespace Process.NET.Windows
 {
@@ -15,6 +20,7 @@ namespace Process.NET.Windows
         private WindowProc _newCallback;
 
         private IntPtr _oldCallback;
+        private bool _isEnabled;
 
         protected WndProcHook(IntPtr handle, string identifier = "")
         {
@@ -25,17 +31,30 @@ namespace Process.NET.Windows
             Handle = handle;
         }
 
-        protected IntPtr Handle { get; set; }
+        protected WndProcHook(IWindow window) : this(window.Handle, window.Title)
+        {
+        }
+
+        protected WndProcHook(IProcess window) : this(window.Native.MainWindowHandle, window.WindowFactory.MainWindow.Title)
+        {
+        }
+
+        protected WndProcHook(string processName) : this(ProcessHelper.GetMainWindowHandle(processName))
+        {
+        }
+
+        public IntPtr Handle { get; protected set; }
 
         public void Enable()
         {
             _newCallback = WndProc;
 
-            _oldCallback = Kernel32.SetWindowLongPtr(Handle, GWL_WNDPROC,
-                Marshal.GetFunctionPointerForDelegate(_newCallback));
+            _oldCallback = Kernel32.SetWindowLongPtr(Handle, GWL_WNDPROC, Marshal.GetFunctionPointerForDelegate(_newCallback));
 
             if (_oldCallback == IntPtr.Zero)
+            {
                 throw new Win32Exception(Marshal.GetLastWin32Error());
+            }
 
             IsEnabled = true;
         }
@@ -44,7 +63,7 @@ namespace Process.NET.Windows
 
         public bool IsDisposed { get; protected set; }
 
-        public bool IsEnabled { get; protected set; }
+        public bool IsEnabled { get; set; }
 
         public bool MustBeDisposed { get; set; } = true;
 
@@ -70,16 +89,23 @@ namespace Process.NET.Windows
             GC.SuppressFinalize(this);
         }
 
-        public event EventHandler<WndProcEventArgs> OnWndProc;
+        public event EventHandler<Message> MessageReceived;
 
-        protected virtual IntPtr WndProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam)
+        protected virtual IntPtr OnWndProc(ref Message msg)
         {
-            return Kernel32.CallWindowProc(_oldCallback, hWnd, msg, wParam, lParam);
+            return Kernel32.CallWindowProc(_oldCallback, msg.HWnd, msg.Msg, msg.WParam, msg.LParam);
         }
 
-        public void SendMessage(int msg, IntPtr wparam)
+        private IntPtr WndProc(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam)
         {
-            User32.SendMessage(Handle, msg, wparam, IntPtr.Zero);
+            var message = Message.Create(hWnd, msg, wParam, lParam);
+
+            return OnWndProc(ref message);
+        }
+
+        public void SendMessage(Message msg)
+        {
+            User32.SendMessage(Handle, msg.Msg, msg.WParam, msg.LParam);
         }
 
         ~WndProcHook()
@@ -93,9 +119,9 @@ namespace Process.NET.Windows
             return Identifier;
         }
 
-        protected virtual void ProcessWndProc(WndProcEventArgs e)
+        protected virtual void OnMessageReceived(ref Message e)
         {
-            OnWndProc?.Invoke(this, e);
+            MessageReceived?.Invoke(this, e);
         }
     }
 }

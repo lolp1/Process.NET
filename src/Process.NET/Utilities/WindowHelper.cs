@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using Process.NET.Marshaling;
 using Process.NET.Native;
 using Process.NET.Native.Types;
+using Process.NET.Windows;
 
 namespace Process.NET.Utilities
 {
@@ -198,7 +200,7 @@ namespace Process.NET.Utilities
         /// <summary>
         ///     Flashes the specified window one time. It does not change the active state of the window.
         ///     To flash the window a specified number of times, use the
-        ///     <see cref="FlashWindowEx(IntPtr, FlashWindowFlags, uint, TimeSpan)" /> function.
+        ///     <see cref="FlashWindowEx(IntPtr, FlashWindowFlags, int, TimeSpan)" /> function.
         /// </summary>
         /// <param name="windowHandle">A handle to the window to be flashed. The window can be either open or minimized.</param>
         /// <returns>
@@ -222,7 +224,7 @@ namespace Process.NET.Utilities
         /// <param name="flags">The flash status.</param>
         /// <param name="count">The number of times to flash the window.</param>
         /// <param name="timeout">The rate at which the window is to be flashed.</param>
-        public static void FlashWindowEx(IntPtr windowHandle, FlashWindowFlags flags, uint count, TimeSpan timeout)
+        public static void FlashWindowEx(IntPtr windowHandle, FlashWindowFlags flags, int count, TimeSpan timeout)
         {
             // Check if the handle is valid
             HandleManipulator.ValidateAsArgument(windowHandle, "windowHandle");
@@ -248,7 +250,7 @@ namespace Process.NET.Utilities
         /// <param name="windowHandle">A handle to the window to be flashed. The window can be either opened or minimized.</param>
         /// <param name="flags">The flash status.</param>
         /// <param name="count">The number of times to flash the window.</param>
-        public static void FlashWindowEx(IntPtr windowHandle, FlashWindowFlags flags, uint count)
+        public static void FlashWindowEx(IntPtr windowHandle, FlashWindowFlags flags, int count)
         {
             FlashWindowEx(windowHandle, flags, count, TimeSpan.FromMilliseconds(0));
         }
@@ -282,7 +284,7 @@ namespace Process.NET.Utilities
         ///     and uMapType.
         ///     If there is no translation, the return value is zero.
         /// </returns>
-        public static uint MapVirtualKey(uint key, TranslationTypes translation)
+        public static int MapVirtualKey(int key, TranslationTypes translation)
         {
             return User32.MapVirtualKey(key, translation);
         }
@@ -304,9 +306,9 @@ namespace Process.NET.Utilities
         ///     and uMapType.
         ///     If there is no translation, the return value is zero.
         /// </returns>
-        public static uint MapVirtualKey(Keys key, TranslationTypes translation)
+        public static int MapVirtualKey(Keys key, TranslationTypes translation)
         {
-            return MapVirtualKey((uint) key, translation);
+            return MapVirtualKey((int)key, translation);
         }
 
         /// <summary>
@@ -320,7 +322,7 @@ namespace Process.NET.Utilities
         /// <param name="message">The message to be posted.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
-        public static void PostMessage(IntPtr windowHandle, uint message, UIntPtr wParam, UIntPtr lParam)
+        public static void PostMessage(IntPtr windowHandle, int message, IntPtr wParam, IntPtr lParam)
         {
             // Check if the handle is valid
             HandleManipulator.ValidateAsArgument(windowHandle, "windowHandle");
@@ -341,9 +343,9 @@ namespace Process.NET.Utilities
         /// <param name="message">The message to be posted.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
-        public static void PostMessage(IntPtr windowHandle, WindowsMessages message, UIntPtr wParam, UIntPtr lParam)
+        public static void PostMessage(IntPtr windowHandle, WindowsMessages message, IntPtr wParam, IntPtr lParam)
         {
-            PostMessage(windowHandle, (uint) message, wParam, lParam);
+            PostMessage(windowHandle, (int) message, wParam, lParam);
         }
 
         /// <summary>
@@ -384,7 +386,7 @@ namespace Process.NET.Utilities
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
         /// <returns>The return value specifies the result of the message processing; it depends on the message sent.</returns>
-        public static IntPtr SendMessage(IntPtr windowHandle, uint message, UIntPtr wParam, IntPtr lParam)
+        public static IntPtr SendMessage(IntPtr windowHandle, int message, IntPtr wParam, IntPtr lParam)
         {
             // Check if the handle is valid
             HandleManipulator.ValidateAsArgument(windowHandle, "windowHandle");
@@ -403,9 +405,20 @@ namespace Process.NET.Utilities
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
         /// <returns>The return value specifies the result of the message processing; it depends on the message sent.</returns>
-        public static IntPtr SendMessage(IntPtr windowHandle, WindowsMessages message, UIntPtr wParam, IntPtr lParam)
+        public static IntPtr SendMessage(IntPtr windowHandle, WindowsMessages message, IntPtr wParam, IntPtr lParam)
         {
-            return SendMessage(windowHandle, (uint) message, wParam, lParam);
+            return SendMessage(windowHandle, (int) message, wParam, lParam);
+        }
+
+        /// <summary>
+        ///     Sends the specified message to a window or windows.
+        ///     The SendMessage function calls the window procedure for the specified window and does not return until the window
+        ///     procedure has processed the message.
+        /// </summary>
+        /// <param name="message">The message data to send.</param>
+        public static IntPtr SendMessage(Message message)
+        {
+            return SendMessage(message.HWnd, message.Msg, message.WParam, message.LParam);
         }
 
         /// <summary>
@@ -514,5 +527,26 @@ namespace Process.NET.Utilities
             // Change the state of the window
             return User32.ShowWindow(windowHandle, state);
         }
+
+        /// <summary>
+        /// Gets the main handle
+        /// </summary>
+        /// <param name="processName">Name of the process.</param>
+        /// <returns>IntPtr.</returns>
+        /// <exception cref="ArgumentNullException"></exception>
+        public static IntPtr GetMainWindowHandle(string processName)
+        {
+            var firstOrDefault = System.Diagnostics.Process.GetProcessesByName(processName);
+
+            var process = firstOrDefault.FirstOrDefault();
+
+            if (process == null)
+            {
+                throw new ArgumentNullException(nameof(process));
+            }
+
+            return process.MainWindowHandle;
+        }
+
     }
 }

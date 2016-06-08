@@ -187,7 +187,7 @@ namespace Process.NET.Native
         ///     If there is no translation, the return value is zero.
         /// </returns>
         [DllImport("user32")]
-        public static extern uint MapVirtualKey(uint key, TranslationTypes translation);
+        public static extern int MapVirtualKey(int key, TranslationTypes translation);
 
         /// <summary>
         ///     Synthesizes keystrokes, mouse motions, and button clicks.
@@ -223,7 +223,7 @@ namespace Process.NET.Native
         /// <param name="lParam">Additional message-specific information.</param>
         /// <returns>The return value specifies the result of the message processing; it depends on the message sent.</returns>
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern IntPtr SendMessage(IntPtr hWnd, uint msg, UIntPtr wParam, IntPtr lParam);
+        public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
         /// <summary>
         ///     Brings the thread that created the specified window into the foreground and activates the window.
@@ -339,7 +339,7 @@ namespace Process.NET.Native
         /// </returns>
         [return: MarshalAs(UnmanagedType.Bool)]
         [DllImport("user32.dll", SetLastError = true)]
-        public static extern bool PostMessage(IntPtr hWnd, uint msg, UIntPtr wParam, UIntPtr lParam);
+        public static extern bool PostMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
 
         /// <summary>
         ///     Retrieves a handle to the foreground window (the window with which the user is currently working).
@@ -403,7 +403,5 @@ namespace Process.NET.Native
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool UnhookWindowsHookEx(IntPtr hhk);
 
-        [DllImport("user32.dll")]
-        internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
     }
 }

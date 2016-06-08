@@ -30,6 +30,7 @@ namespace Process.NET
             };
 
             Native = native;
+
             Handle = MemoryHelper.OpenProcess(ProcessAccessFlags.AllAccess, Native.Id);
 
             native.ErrorDataReceived += OutputDataReceived;
@@ -42,6 +43,21 @@ namespace Process.NET
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="ProcessSharp"/> class.
+        /// </summary>
+        /// <param name="processName">Name of the process.</param>
+        public ProcessSharp(string processName) : this(ProcessHelper.FromName(processName))
+        {           
+        }
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProcessSharp"/> class.
+        /// </summary>
+        /// <param name="processId">The process id of the process to open with all rights.</param>
+        public ProcessSharp(int processId) : this(ProcessHelper.FromProcessId(processId))
+        {
+        }
+
+        /// <summary>
         ///     Class for reading and writing memory.
         /// </summary>
         public IMemory Memory { get; set; }
@@ -49,37 +65,45 @@ namespace Process.NET
         /// <summary>
         ///     Provide access to the opened process.
         /// </summary>
-        public System.Diagnostics.Process Native { get; }
+        public System.Diagnostics.Process Native { get; set; }
 
         /// <summary>
         ///     The process handle opened with all rights.
         /// </summary>
-        public SafeMemoryHandle Handle { get; }
-
-        IMemory IProcess.Memory => Memory;
+        public SafeMemoryHandle Handle { get; set; }
 
         /// <summary>
         ///     Factory for manipulating threads.
         /// </summary>
-        public IThreadFactory ThreadFactory { get; }
+        public IThreadFactory ThreadFactory { get; set; }
 
         /// <summary>
         ///     Factory for manipulating modules and libraries.
         /// </summary>
-        public IModuleFactory ModuleFactory { get; }
+        public IModuleFactory ModuleFactory { get; set; }
 
         /// <summary>
         ///     Factory for manipulating memory space.
         /// </summary>
-        public IMemoryFactory MemoryFactory { get; }
+        public IMemoryFactory MemoryFactory { get; set; }
 
         /// <summary>
         ///     Factory for manipulating windows.
         /// </summary>
-        public IWindowFactory WindowFactory { get; }
+        public IWindowFactory WindowFactory { get; set; }
 
+        /// <summary>
+        /// Gets the <see cref="IProcessModule"/> with the specified module name.
+        /// </summary>
+        /// <param name="moduleName">Name of the module.</param>
+        /// <returns>IProcessModule.</returns>
         public IProcessModule this[string moduleName] => ModuleFactory[moduleName];
 
+        /// <summary>
+        /// Gets the <see cref="IPointer"/> with the specified address.
+        /// </summary>
+        /// <param name="intPtr">The address the pointer is located at in memory.</param>
+        /// <returns>IPointer.</returns>
         public IPointer this[IntPtr intPtr] => new MemoryPointer(this, intPtr);
 
         /// <summary>
@@ -87,10 +111,10 @@ namespace Process.NET
         /// </summary>
         public virtual void Dispose()
         {
-            ThreadFactory.Dispose();
-            ModuleFactory.Dispose();
-            MemoryFactory.Dispose();
-            WindowFactory.Dispose();
+            ThreadFactory?.Dispose();
+            ModuleFactory?.Dispose();
+            MemoryFactory?.Dispose();
+            WindowFactory?.Dispose();
             Handle.Close();
             GC.SuppressFinalize(this);
         }

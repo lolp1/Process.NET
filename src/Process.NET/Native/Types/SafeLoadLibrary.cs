@@ -25,7 +25,7 @@ namespace Process.NET.Native.Types
         /// <param name="library">The library.</param>
         /// <param name="loadLibraryOptions">The load library options.</param>
         /// <returns></returns>
-        public static unsafe SafeLoadLibrary LoadLibraryEx(string library, uint loadLibraryOptions = 0)
+        public static unsafe SafeLoadLibrary LoadLibraryEx(string library, int loadLibraryOptions = 0)
         {
             var result = Kernel32.LoadLibraryExW(library, null, loadLibraryOptions);
             if (result.IsInvalid)

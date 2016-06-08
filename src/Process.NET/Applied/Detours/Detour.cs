@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Process.NET.Extensions;
 using Process.NET.Memory;
 using Process.NET.Utilities;
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using Process.NET.Extensions;
 using Process.NET.Memory;
 using Process.NET.Utilities;
 

@@ -115,7 +115,7 @@ namespace Process.NET.Windows
         /// <param name="count">The number of times to flash the window.</param>
         /// <param name="timeout">The rate at which the window is to be flashed.</param>
         /// <param name="flags">The flash status.</param>
-        void Flash(uint count, TimeSpan timeout, FlashWindowFlags flags = FlashWindowFlags.All);
+        void Flash(int count, TimeSpan timeout, FlashWindowFlags flags = FlashWindowFlags.All);
 
         /// <summary>
         ///     Places (posts) a message in the message queue associated with the thread that created the window and returns
@@ -124,7 +124,7 @@ namespace Process.NET.Windows
         /// <param name="message">The message to be posted.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
-        void PostMessage(WindowsMessages message, UIntPtr wParam, UIntPtr lParam);
+        void PostMessage(WindowsMessages message, IntPtr wParam, IntPtr lParam);
 
         /// <summary>
         ///     Places (posts) a message in the message queue associated with the thread that created the window and returns
@@ -133,7 +133,7 @@ namespace Process.NET.Windows
         /// <param name="message">The message to be posted.</param>
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
-        void PostMessage(uint message, UIntPtr wParam, UIntPtr lParam);
+        void PostMessage(int message, IntPtr wParam, IntPtr lParam);
 
         /// <summary>
         ///     Sends the specified message to a window or windows.
@@ -144,7 +144,7 @@ namespace Process.NET.Windows
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
         /// <returns>The return value specifies the result of the message processing; it depends on the message sent.</returns>
-        IntPtr SendMessage(WindowsMessages message, UIntPtr wParam, IntPtr lParam);
+        IntPtr SendMessage(WindowsMessages message, IntPtr wParam, IntPtr lParam);
 
         /// <summary>
         ///     Sends the specified message to a window or windows.
@@ -155,6 +155,6 @@ namespace Process.NET.Windows
         /// <param name="wParam">Additional message-specific information.</param>
         /// <param name="lParam">Additional message-specific information.</param>
         /// <returns>The return value specifies the result of the message processing; it depends on the message sent.</returns>
-        IntPtr SendMessage(uint message, UIntPtr wParam, IntPtr lParam);
+        IntPtr SendMessage(int message, IntPtr wParam, IntPtr lParam);
     }
 }

@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Process.NET.Extensions;
 using Process.NET.Memory;
 using Process.NET.Native.Types;
 using Process.NET.Utilities;
@@ -24,7 +25,7 @@ namespace Process.NET
         ///     Writes a set of bytes to memory.
         /// </summary>
         /// <param name="intPtr">The address where the bytes start in memory.</param>
-        /// <param name="length">The slength of the byte chunk to read from the memory address.</param>
+        /// <param name="length">The length of the byte chunk to read from the memory address.</param>
         /// <returns>
         ///     The byte array section read from memory.
         /// </returns>
@@ -48,7 +49,7 @@ namespace Process.NET
         /// <returns>A value.</returns>
         public override T Read<T>(IntPtr intPtr)
         {
-            return MemoryHelper.InternalRead<T>(intPtr);
+            return intPtr.Read<T>();
         }
 
         /// <summary>

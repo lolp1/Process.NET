@@ -8,7 +8,7 @@ using Process.NET.Windows;
 namespace Process.NET
 {
     /// <summary>
-    ///     A class that offsers several tools to interact with a process.
+    ///     A class that offers several tools to interact with a process.
     /// </summary>
     /// <seealso cref="System.IDisposable" />
     public interface IProcess : IDisposable
@@ -16,38 +16,38 @@ namespace Process.NET
         /// <summary>
         ///     Provide access to the opened process.
         /// </summary>
-        System.Diagnostics.Process Native { get; }
+        System.Diagnostics.Process Native { get; set; }
 
         /// <summary>
         ///     The process handle opened with all rights.
         /// </summary>
-        SafeMemoryHandle Handle { get; }
+        SafeMemoryHandle Handle { get; set; }
 
         /// <summary>
         ///     Class for reading and writing memory.
         /// </summary>
-        IMemory Memory { get; }
+        IMemory Memory { get; set; }
 
         /// <summary>
         ///     Factory for manipulating threads.
         /// </summary>
-        IThreadFactory ThreadFactory { get; }
+        IThreadFactory ThreadFactory { get; set; }
 
         /// <summary>
         ///     Factory for manipulating modules and libraries.
         /// </summary>
-        IModuleFactory ModuleFactory { get; }
+        IModuleFactory ModuleFactory { get; set; }
 
         /// <summary>
         ///     Factory for manipulating memory space.
         /// </summary>
-        IMemoryFactory MemoryFactory { get; }
+        IMemoryFactory MemoryFactory { get; set; }
 
         /// <summary>
         ///     Factory for manipulating windows.
         /// </summary>
-        IWindowFactory WindowFactory { get; }
-
+        IWindowFactory WindowFactory { get; set; }
+    
         /// <summary>
         ///     Gets the specified module in the process.
         /// </summary>

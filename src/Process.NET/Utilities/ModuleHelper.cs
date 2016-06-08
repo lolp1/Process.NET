@@ -24,7 +24,7 @@ namespace Process.NET.Utilities
             var module =
                 System.Diagnostics.Process.GetCurrentProcess()
                     .Modules.Cast<ProcessModule>()
-                    .FirstOrDefault(m => m.ModuleName.ToLower() == moduleName.ToLower());
+                    .FirstOrDefault(m => string.Equals(m.ModuleName, moduleName, StringComparison.CurrentCultureIgnoreCase));
 
             // Check whether there is a module loaded with this name
             if (module == null)
@@ -42,16 +42,7 @@ namespace Process.NET.Utilities
             throw new Win32Exception($"Couldn't get the function address of {functionName}.");
         }
 
-        /// <summary>
-        ///     Retrieves the address of an exported function or variable from the specified dynamic-link library (DLL).
-        /// </summary>
-        /// <param name="module">The <see cref="ProcessModule" /> object corresponding to the module.</param>
-        /// <param name="functionName">The function or variable name, or the function's ordinal value.</param>
-        /// <returns>If the function succeeds, the return value is the address of the exported function.</returns>
-        public static IntPtr GetProcAddress(ProcessModule module, string functionName)
-        {
-            return GetProcAddress(module.ModuleName, functionName);
-        }
+    
 
         /// <summary>
         ///     Frees the loaded dynamic-link library (DLL) module and, if necessary, decrements its reference count.
@@ -73,15 +64,6 @@ namespace Process.NET.Utilities
             // Free the library
             if (!Kernel32.FreeLibrary(module.BaseAddress))
                 throw new Win32Exception($"Couldn't free the library {libraryName}.");
-        }
-
-        /// <summary>
-        ///     Frees the loaded dynamic-link library (DLL) module and, if necessary, decrements its reference count.
-        /// </summary>
-        /// <param name="module">The <see cref="ProcessModule" /> object corresponding to the library to free.</param>
-        public static void FreeLibrary(ProcessModule module)
-        {
-            FreeLibrary(module.ModuleName);
         }
 
         /// <summary>

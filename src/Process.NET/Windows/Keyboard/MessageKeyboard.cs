@@ -80,7 +80,7 @@ namespace Process.NET.Windows.Keyboard
         /// <param name="key">The virtual key to press.</param>
         public void Press(Keys key)
         {
-            Window.PostMessage(WindowsMessages.KeyDown, new UIntPtr((uint) key), MakeKeyParameter(key, false));
+            Window.PostMessage(WindowsMessages.KeyDown, new IntPtr((int) key), MakeKeyParameter(key, false));
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace Process.NET.Windows.Keyboard
         /// <param name="character">The character to write.</param>
         public void Write(char character)
         {
-            Window.PostMessage(WindowsMessages.Char, new UIntPtr(character), UIntPtr.Zero);
+            Window.PostMessage(WindowsMessages.Char, new IntPtr(character), IntPtr.Zero);
         }
 
         /// <summary>
@@ -104,7 +104,7 @@ namespace Process.NET.Windows.Keyboard
             // If the key is pressed with an interval
             if (PressedKeys.Contains(tuple))
                 PressedKeys.Remove(tuple);
-            Window.PostMessage(WindowsMessages.KeyUp, new UIntPtr((uint) key), MakeKeyParameter(key, true));
+            Window.PostMessage(WindowsMessages.KeyUp, new IntPtr((int) key), MakeKeyParameter(key, true));
         }
 
         /// <summary>
@@ -143,27 +143,36 @@ namespace Process.NET.Windows.Keyboard
         ///     KeyDown resources: http://msdn.microsoft.com/en-us/library/windows/desktop/ms646280%28v=vs.85%29.aspx
         ///     KeyUp resources:  http://msdn.microsoft.com/en-us/library/windows/desktop/ms646281%28v=vs.85%29.aspx
         /// </remarks>
-        private static UIntPtr MakeKeyParameter(Keys key, bool keyUp, bool fRepeat, uint cRepeat, bool altDown,
+        private static IntPtr MakeKeyParameter(Keys key, bool keyUp, bool fRepeat, int cRepeat, bool altDown,
             bool fExtended)
         {
             // Create the result and assign it with the repeat count
-            var result = cRepeat;
+            var result = (uint)cRepeat;
             // Add the scan code with a left shift operation
-            result |= WindowHelper.MapVirtualKey(key, TranslationTypes.VirtualKeyToScanCode) << 16;
+            result |= (uint)WindowHelper.MapVirtualKey(key, TranslationTypes.VirtualKeyToScanCode) << 16;
             // Does we need to set the extended flag ?
             if (fExtended)
+            {
                 result |= 0x1000000;
+            }
             // Does we need to set the alt flag ?
             if (altDown)
+            {
                 result |= 0x20000000;
+            }
             // Does we need to set the repeat flag ?
             if (fRepeat)
+            {
                 result |= 0x40000000;
+            }
+
             // Does we need to set the keyUp flag ?
             if (keyUp)
+            {
                 result |= 0x80000000;
+            }
 
-            return new UIntPtr(result);
+            return new IntPtr(result);
         }
 
         /// <summary>
@@ -176,7 +185,7 @@ namespace Process.NET.Windows.Keyboard
         ///     The value is always 1 for a <see cref="WindowsMessages.KeyUp" /> message.
         /// </param>
         /// <returns>The return value is the lParam when posting or sending a message regarding key press.</returns>
-        private static UIntPtr MakeKeyParameter(Keys key, bool keyUp)
+        private static IntPtr MakeKeyParameter(Keys key, bool keyUp)
         {
             return MakeKeyParameter(key, keyUp, keyUp, 1, false, false);
         }

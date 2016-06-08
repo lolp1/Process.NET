@@ -3,6 +3,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using Process.NET.Native.Types;
+using Process.NET.Windows;
 
 namespace Process.NET.Native
 {
@@ -90,7 +91,7 @@ namespace Process.NET.Native
         public static extern bool IsWow64Process([In] IntPtr process, [Out] out bool wow64Process);
 
         [DllImport("kernel32.dll", SetLastError = true, EntryPoint = "GetProcAddress")]
-        public static extern IntPtr GetProcAddressOrdinal(uint hModule, uint procName);
+        public static extern IntPtr GetProcAddressOrdinal(int hModule, int procName);
 
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
         public static extern IntPtr GetModuleHandle(string lpModuleName);
@@ -112,7 +113,7 @@ namespace Process.NET.Native
 
         [DllImport("kernel32.dll", ExactSpelling = true, CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern unsafe SafeLoadLibrary LoadLibraryExW([In] string lpwLibFileName, [In] void* hFile,
-            [In] uint dwFlags);
+            [In] int dwFlags);
 
         public static bool Is32BitProcess(IntPtr hProcess)
         {
@@ -145,7 +146,7 @@ namespace Process.NET.Native
         ///     To get extended error information, use <see cref="Marshal.GetLastWin32Error" />.
         /// </returns>
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern uint SuspendThread(SafeMemoryHandle hThread);
+        public static extern int SuspendThread(SafeMemoryHandle hThread);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern IntPtr GetCurrentProcess();
@@ -447,7 +448,7 @@ namespace Process.NET.Native
         ///     <see cref="Marshal.GetLastWin32Error" />.
         /// </returns>
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern uint ResumeThread(SafeMemoryHandle hThread);
+        public static extern int ResumeThread(SafeMemoryHandle hThread);
 
         /// <summary>
         ///     Opens an existing local process object.
@@ -642,7 +643,7 @@ namespace Process.NET.Native
         ///     <see cref="Marshal.GetLastWin32Error" />.
         /// </returns>
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern bool GetThreadSelectorEntry(SafeMemoryHandle hThread, uint dwSelector,
+        public static extern bool GetThreadSelectorEntry(SafeMemoryHandle hThread, int dwSelector,
             out LdtEntry lpSelectorEntry);
 
         /// <summary>
@@ -716,7 +717,7 @@ namespace Process.NET.Native
         /// </returns>
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern SafeMemoryHandle CreateRemoteThread(SafeMemoryHandle hProcess, IntPtr lpThreadAttributes,
-            uint dwStackSize, IntPtr lpStartAddress,
+            int dwStackSize, IntPtr lpStartAddress,
             IntPtr lpParameter, ThreadCreationFlags dwCreationFlags, out int lpThreadId);
 
         /// <summary>
@@ -755,7 +756,7 @@ namespace Process.NET.Native
         public static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
 
         [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
-        internal static extern IntPtr GetWindowLong32(IntPtr hWnd, int nIndex);
+        public static extern IntPtr GetWindowLong32(IntPtr hWnd, int nIndex);
 
         [DllImport("user32.dll")]
         public static extern IntPtr SetWindowsHookEx(HookType code,
@@ -764,22 +765,27 @@ namespace Process.NET.Native
             int threadId);
 
         [DllImport("user32.dll", EntryPoint = "GetWindowLongPtr")]
-        internal static extern IntPtr GetWindowLongPtr64(IntPtr hWnd, int nIndex);
+        public static extern IntPtr GetWindowLongPtr64(IntPtr hWnd, int nIndex);
 
         [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
-        internal static extern IntPtr SetWindowLong32(IntPtr hWnd, int nIndex, IntPtr newValue);
+        public static extern IntPtr SetWindowLong32(IntPtr hWnd, int nIndex, IntPtr newValue);
 
         [DllImport("user32.dll", EntryPoint = "SetWindowLongPtr")]
-        internal static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, int nIndex, IntPtr newValue);
+        public static extern IntPtr SetWindowLongPtr64(IntPtr hWnd, int nIndex, IntPtr newValue);
 
         [DllImport("user32.dll")]
-        internal static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, int msg, IntPtr wParam,
+        public static extern IntPtr CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, int msg, IntPtr wParam,
             IntPtr lParam);
 
         [DllImport("user32.dll")]
-        internal static extern int RegisterWindowMessage(string lpString);
+        public static extern int RegisterWindowMessage(string lpString);
 
         [DllImport("user32.dll")]
-        internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+        public static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, IntPtr lParam);
+
+        public static IntPtr SendMessage(Message message)
+        {
+            return SendMessage(message.HWnd, message.Msg, message.WParam, message.LParam);
+        }
     }
 }
