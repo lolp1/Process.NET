@@ -46,7 +46,7 @@ namespace Process.NET.Modules
         /// <summary>
         ///     Gets the modules that have been loaded in the remote process.
         /// </summary>
-        public IEnumerable<IProcessModule> RemoteModules => NativeModules.ToArray().Select(FetchModule);
+        public IEnumerable<IProcessModule> RemoteModules => NativeModules.Select(FetchModule);
 
         /// <summary>
         ///     Gets the native modules that have been loaded in the remote process.

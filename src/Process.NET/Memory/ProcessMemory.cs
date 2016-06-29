@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Text;
-using Process.NET.Memory;
 using Process.NET.Native.Types;
 
-namespace Process.NET
+namespace Process.NET.Memory
 {
     /// <summary>
     ///     Class for memory editing a process.

@@ -387,35 +387,39 @@ namespace Process.NET.Native.Types
     }
 
     /// <summary>
-    ///     Structure containing basic information about a thread.
+    /// Structure containing basic information about a thread.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct ThreadBasicInformation
     {
         /// <summary>
-        ///     the exit status.
+        /// the exit status.
         /// </summary>
-        public int ExitStatus;
+        public uint ExitStatus;
         /// <summary>
-        ///     The base address of Thread Environment Block.
+        /// The base address of Thread Environment Block.
         /// </summary>
-        public IntPtr TebBaseAddress;
+        public IntPtr TebBaseAdress;
         /// <summary>
-        ///     Client_ID sub struct
+        /// The process id which owns the thread.
         /// </summary>
-        public ClientId ClientId;
+        public int ProcessId;
         /// <summary>
-        ///     The affinity mask.
+        /// The thread id.
         /// </summary>
-        public IntPtr AffinityMask;
+        public int ThreadId;
         /// <summary>
-        ///     The priority.
+        /// The affinity mask.
         /// </summary>
-        public int Priority;
+        public uint AffinityMask;
         /// <summary>
-        ///     The base priority.
+        /// The priority.
         /// </summary>
-        public int BasePriority;
+        public uint Priority;
+        /// <summary>
+        /// The base priority.
+        /// </summary>
+        public uint BasePriority;
     }
 
     [StructLayout(LayoutKind.Sequential)]

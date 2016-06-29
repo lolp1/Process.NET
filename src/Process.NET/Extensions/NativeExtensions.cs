@@ -1,4 +1,4 @@
-namespace Process.NET.Utilities
+namespace Process.NET.Extensions
 {
     public static class NativeExtensions
     {

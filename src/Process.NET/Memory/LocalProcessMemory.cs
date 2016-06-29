@@ -1,16 +1,14 @@
 using System;
 using System.Runtime.InteropServices;
 using Process.NET.Extensions;
-using Process.NET.Memory;
 using Process.NET.Native.Types;
-using Process.NET.Utilities;
 
-namespace Process.NET
+namespace Process.NET.Memory
 {
     /// <summary>
     ///     Class for memory editing a process.
     /// </summary>
-    /// <seealso cref="Process.NET.ProcessMemory" />
+    /// <seealso cref="ProcessMemory" />
     public class LocalProcessMemory : ProcessMemory
     {
         /// <summary>
