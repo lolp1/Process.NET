@@ -93,6 +93,7 @@
     <Compile Include="Extensions\ProcessExtensions.cs" />
     <Compile Include="Extensions\ProcessModuleExtensions.cs" />
     <Compile Include="IProcess.cs" />
+    <Compile Include="Memory\MemoryType.cs" />
     <Compile Include="Patterns\PatternScanner.cs" />
     <Compile Include="ProcessSharp.cs" />
     <Compile Include="Extensions\NativeExtensions.cs" />
@@ -180,9 +181,9 @@
     <Compile Include="Windows\WindowFactory.cs" />
     <Compile Include="Windows\WndProcEventArgs.cs" />
     <Compile Include="Windows\WndProcHook.cs" />
-    <Compile Include="LocalProcessMemory.cs" />
-    <Compile Include="ProcessMemory.cs" />
-    <Compile Include="ExternalProcessMemory.cs" />
+    <Compile Include="Memory\LocalProcessMemory.cs" />
+    <Compile Include="Memory\ProcessMemory.cs" />
+    <Compile Include="Memory\ExternalProcessMemory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup />
