@@ -89,10 +89,12 @@ namespace Process.NET.Threads
 
             //Create the thread
             var ret = ThreadHelper.NtQueryInformationThread(
-                ThreadHelper.CreateRemoteThread(Process.Handle, address, marshalledParameter.Reference, ThreadCreationFlags.Suspended));
+                ThreadHelper.CreateRemoteThread(Process.Handle, address, marshalledParameter.Reference,
+                    ThreadCreationFlags.Suspended));
 
             // Find the managed object corresponding to this thread
-            var result = new RemoteThread(Process, Process.ThreadFactory.NativeThreads.First(t => t.Id == ret.ThreadId), marshalledParameter);
+            var result = new RemoteThread(Process, Process.ThreadFactory.NativeThreads.First(t => t.Id == ret.ThreadId),
+                marshalledParameter);
 
             if (isStarted)
                 result.Resume();
@@ -109,8 +111,9 @@ namespace Process.NET.Threads
         /// <param name="isStarted">Sets if the thread must be started just after being created.</param>
         /// <returns>A new instance of the <see cref="RemoteThread" /> class.</returns>
         public IRemoteThread Create(IntPtr address, bool isStarted = true)
-        {  //Create the thread
-            ThreadBasicInformation ret = ThreadHelper.NtQueryInformationThread(
+        {
+            //Create the thread
+            var ret = ThreadHelper.NtQueryInformationThread(
                 ThreadHelper.CreateRemoteThread(Process.Handle, address, IntPtr.Zero, ThreadCreationFlags.Suspended));
 
             // Find the managed object corresponding to this thread
@@ -195,6 +198,4 @@ namespace Process.NET.Threads
                 thread.Suspend();
         }
     }
-
-   
 }

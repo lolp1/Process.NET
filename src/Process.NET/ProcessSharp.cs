@@ -126,18 +126,26 @@ namespace Process.NET
         /// <returns>IPointer.</returns>
         public IPointer this[IntPtr intPtr] => new MemoryPointer(this, intPtr);
 
+        protected bool IsDisposed { get; set; }
+        protected bool MustBeDisposed { get; set; } = true;
+
         /// <summary>
         ///     Releases unmanaged and - optionally - managed resources.
         /// </summary>
         public virtual void Dispose()
         {
-            OnDispose?.Invoke(this, EventArgs.Empty);
-            ThreadFactory?.Dispose();
-            ModuleFactory?.Dispose();
-            MemoryFactory?.Dispose();
-            WindowFactory?.Dispose();
-            Handle?.Close();
-            GC.SuppressFinalize(this);
+            if (!IsDisposed)
+            {
+                IsDisposed = true;
+
+                OnDispose?.Invoke(this, EventArgs.Empty);
+                ThreadFactory?.Dispose();
+                ModuleFactory?.Dispose();
+                MemoryFactory?.Dispose();
+                WindowFactory?.Dispose();
+                Handle?.Close();
+                GC.SuppressFinalize(this);
+            }
         }
 
         /// <summary>
@@ -160,7 +168,10 @@ namespace Process.NET
 
         ~ProcessSharp()
         {
-            Dispose();
+            if (MustBeDisposed)
+            {
+                Dispose();
+            }
         }
     }
 }

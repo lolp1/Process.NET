@@ -4,7 +4,7 @@ namespace Process.NET.Windows
 {
     public class WndProcEventArgs : EventArgs
     {
-        public WndProcEventArgs(IntPtr hwnd, int msg, int wParam, IntPtr lParam)
+        public WndProcEventArgs(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam)
         {
             Hwnd = hwnd;
             Msg = msg;
@@ -16,7 +16,7 @@ namespace Process.NET.Windows
 
         public int Msg { get; }
 
-        public int WParam { get; }
+        public IntPtr WParam { get; }
 
         public IntPtr LParam { get; }
     }

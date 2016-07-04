@@ -101,17 +101,17 @@ namespace Process.NET.Native.Types
         /// <summary>
         ///     The information about a simulated mouse event.
         /// </summary>
-        [FieldOffset(sizeof (int))] public MouseInput Mouse;
+        [FieldOffset(sizeof(int))] public MouseInput Mouse;
 
         /// <summary>
         ///     The information about a simulated keyboard event.
         /// </summary>
-        [FieldOffset(sizeof (int))] public KeyboardInput Keyboard;
+        [FieldOffset(sizeof(int))] public KeyboardInput Keyboard;
 
         /// <summary>
         ///     The information about a simulated hardware event.
         /// </summary>
-        [FieldOffset(sizeof (int))] public HardwareInput Hardware;
+        [FieldOffset(sizeof(int))] public HardwareInput Hardware;
     }
 
     /// <summary>
@@ -380,6 +380,7 @@ namespace Process.NET.Native.Types
         ///     The process id which owns the thread.
         /// </summary>
         public IntPtr UniqueProcess;
+
         /// <summary>
         ///     The thread id.
         /// </summary>
@@ -387,37 +388,43 @@ namespace Process.NET.Native.Types
     }
 
     /// <summary>
-    /// Structure containing basic information about a thread.
+    ///     Structure containing basic information about a thread.
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
     public struct ThreadBasicInformation
     {
         /// <summary>
-        /// the exit status.
+        ///     the exit status.
         /// </summary>
         public uint ExitStatus;
+
         /// <summary>
-        /// The base address of Thread Environment Block.
+        ///     The base address of Thread Environment Block.
         /// </summary>
         public IntPtr TebBaseAdress;
+
         /// <summary>
-        /// The process id which owns the thread.
+        ///     The process id which owns the thread.
         /// </summary>
         public int ProcessId;
+
         /// <summary>
-        /// The thread id.
+        ///     The thread id.
         /// </summary>
         public int ThreadId;
+
         /// <summary>
-        /// The affinity mask.
+        ///     The affinity mask.
         /// </summary>
         public uint AffinityMask;
+
         /// <summary>
-        /// The priority.
+        ///     The priority.
         /// </summary>
         public uint Priority;
+
         /// <summary>
-        /// The base priority.
+        ///     The base priority.
         /// </summary>
         public uint BasePriority;
     }

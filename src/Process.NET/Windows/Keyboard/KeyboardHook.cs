@@ -24,7 +24,6 @@ namespace Process.NET.Windows.Keyboard
         public KeyboardHook(string name)
         {
             Identifier = name;
-            Enable();
         }
 
         /// <summary>

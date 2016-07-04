@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using Process.NET.Applied;
 using Process.NET.Native;
 using Process.NET.Native.Types;
 
@@ -11,14 +12,15 @@ namespace Process.NET.Windows.Mouse
         Mouse
     }
 
-    public sealed class MouseHook : IDisposable
+    public sealed class MouseHook : IApplied
     {
         private readonly LowLevelProc _callback;
 
         private IntPtr _hookId;
 
-        public MouseHook()
+        public MouseHook(string identifier)
         {
+            Identifier = identifier;
             _callback = MouseHookCallback;
         }
 
@@ -26,7 +28,7 @@ namespace Process.NET.Windows.Mouse
 
         public bool IsDisposed { get; set; }
         public bool MustBeDisposed { get; set; } = true;
-        public string Identifier { get; set; }
+        public string Identifier { get; }
 
         public void Enable()
         {
@@ -49,7 +51,7 @@ namespace Process.NET.Windows.Mouse
         {
             if (nCode >= 0)
             {
-                var lParamStruct = (MSLLHOOKSTRUCT) Marshal.PtrToStructure(lParam, typeof (MSLLHOOKSTRUCT));
+                var lParamStruct = (MSLLHOOKSTRUCT) Marshal.PtrToStructure(lParam, typeof(MSLLHOOKSTRUCT));
                 var e = new MouseHookEventArgs(lParamStruct);
                 switch ((MouseMessages) wParam)
                 {
