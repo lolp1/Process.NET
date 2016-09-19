@@ -8,6 +8,9 @@ Process.NET is a tool for interacting with processes based around a library call
  
 Process.NET is simply a result of both me learning to program as a newer developer interested in both C# and native code, and the lack of a few features I desired in the library I enjoyed using as a new programmer.
 
+
+NuGet of latest version: 
+https://www.nuget.org/packages/Process.NET/
 ----------
 
 
