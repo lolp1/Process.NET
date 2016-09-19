@@ -46,8 +46,11 @@ namespace Process.NET.Applied.Detours
 
             //Setup the detour bytes
             New = new List<byte> {0x68};
-            var tmp = BitConverter.GetBytes(HookPointer.ToInt32());
-            New.AddRange(tmp);
+
+            var bytes = IntPtr.Size == 4 ? BitConverter.GetBytes(HookPointer.ToInt32()) : BitConverter.GetBytes(HookPointer.ToInt64());
+
+     
+            New.AddRange(bytes);
             New.Add(0xC3);
         }
 
@@ -125,11 +128,15 @@ namespace Process.NET.Applied.Detours
         public void Dispose()
         {
             if (IsDisposed)
+            {
                 return;
+            }
 
             IsDisposed = true;
             if (IsEnabled)
+            {
                 Disable();
+            }
             GC.SuppressFinalize(this);
         }
 
@@ -150,7 +157,9 @@ namespace Process.NET.Applied.Detours
         public void Disable(bool disableDueToRules)
         {
             if (IgnoreRules && disableDueToRules)
+            {
                 return;
+            }
 
             DisabledDueToRules = disableDueToRules;
 
@@ -173,10 +182,14 @@ namespace Process.NET.Applied.Detours
             else
             {
                 if (DisabledDueToRules)
+                {
                     return;
+                }
 
                 if (IsEnabled)
+                {
                     return;
+                }
 
                 ProcessMemory.Write(Target, New.ToArray());
                 IsEnabled = true;
@@ -186,7 +199,9 @@ namespace Process.NET.Applied.Detours
         ~Detour()
         {
             if (MustBeDisposed)
+            {
                 Dispose();
+            }
         }
 
         /// <summary>
