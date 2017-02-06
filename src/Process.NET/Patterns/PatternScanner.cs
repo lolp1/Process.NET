@@ -7,11 +7,18 @@ namespace Process.NET.Patterns
     public class PatternScanner : IPatternScanner
     {
         private readonly IProcessModule _module;
+        private readonly int _offsetFromBaseAddress;
 
         public PatternScanner(IProcessModule module)
         {
+            new PatternScanner(module, 0);
+        }
+
+        public PatternScanner(IProcessModule module, int offsetFromBaseAddress)
+        {
             _module = module;
-            Data = module.Read(0, _module.Size);
+            _offsetFromBaseAddress = offsetFromBaseAddress;
+            Data = module.Read(_offsetFromBaseAddress, _module.Size - _offsetFromBaseAddress);
         }
 
         public byte[] Data { get; }
@@ -38,9 +45,9 @@ namespace Process.NET.Patterns
 
                 return new PatternScanResult
                 {
-                    BaseAddress = _module.BaseAddress + offset,
-                    ReadAddress = _module.BaseAddress + offset,
-                    Offset = offset,
+                    BaseAddress = _module.BaseAddress + offset + _offsetFromBaseAddress,
+                    ReadAddress = _module.BaseAddress + offset + _offsetFromBaseAddress,
+                    Offset = offset + _offsetFromBaseAddress,
                     Found = true
                 };
             }
