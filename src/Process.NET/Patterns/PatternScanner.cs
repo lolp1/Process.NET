@@ -35,14 +35,10 @@ namespace Process.NET.Patterns
             var patternData = Data;
             var patternDataLength = patternData.Length;
 
-            for (var offset = 0; offset < patternDataLength; offset++)
-            {
-                if (
-                    pattern.GetMask()
-                        .Where((m, b) => m == 'x' && pattern.GetBytes()[b] != patternData[b + offset])
-                        .Any())
-                    continue;
+            var offset = Utilities.BoyerMooreHorspool.IndexOf(Data, pattern.GetBytes().ToArray());
 
+            if (offset != -1)
+            {
                 return new PatternScanResult
                 {
                     BaseAddress = _module.BaseAddress + offset + _offsetFromBaseAddress,
@@ -67,11 +63,10 @@ namespace Process.NET.Patterns
             var patternMask = pattern.GetMask();
 
             var result = new PatternScanResult();
+            var offset = Utilities.BoyerMooreHorspool.IndexOf(Data, pattern.GetBytes().ToArray());
 
-            for (var offset = 0; offset < patternData.Length; offset++)
+            if ( offset != -1)
             {
-                if (patternMask.Where((m, b) => m == 'x' && patternBytes[b] != patternData[b + offset]).Any())
-                    continue;
                 // If this area is reached, the pattern has been found.
                 result.Found = true;
                 result.ReadAddress = _module.Read<IntPtr>(offset + pattern.Offset);
