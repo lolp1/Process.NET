@@ -8,6 +8,7 @@ namespace Process.NET.Patterns
     {
         private readonly IProcessModule _module;
         private readonly int _offsetFromBaseAddress;
+        private readonly PatternScannerAlgorithm _algorithm;
 
         private static readonly PatternScanResult EmptyPatternScanResult = new PatternScanResult
         {
@@ -17,11 +18,14 @@ namespace Process.NET.Patterns
             Found = false
         };
 
-        public PatternScanner(IProcessModule module) : this(module, 0) { }
-        public PatternScanner(IProcessModule module, int offsetFromBaseAddress)
+        public PatternScanner(IProcessModule module) : this(module, 0, PatternScannerAlgorithm.BoyerMooreHorspool) { }
+        public PatternScanner(IProcessModule module, int offsetFromBaseAddress) : this(module, offsetFromBaseAddress, PatternScannerAlgorithm.BoyerMooreHorspool) { }
+        public PatternScanner(IProcessModule module, PatternScannerAlgorithm algorithm) : this(module, 0, algorithm) { }
+        public PatternScanner(IProcessModule module, int offsetFromBaseAddress, PatternScannerAlgorithm algorithm)
         {
             _module = module;
             _offsetFromBaseAddress = offsetFromBaseAddress;
+            _algorithm = algorithm;
             Data = module.Read(_offsetFromBaseAddress, _module.Size - _offsetFromBaseAddress);
         }
 
@@ -39,13 +43,31 @@ namespace Process.NET.Patterns
             throw new NotImplementedException("PatternScanner encountered an unknown MemoryPatternType " + pattern.PatternType + ".");
         }
 
+        private int GetOffset(IMemoryPattern pattern)
+        {
+            var offset = -1;
+
+            switch(_algorithm)
+            {
+                case PatternScannerAlgorithm.BoyerMooreHorspool:
+                    offset = Utilities.BoyerMooreHorspool.IndexOf(Data, pattern.GetBytes().ToArray());
+                    break;
+                case PatternScannerAlgorithm.Naive:
+                    var patternMask = pattern.GetMask();
+                    for (offset = 0; offset < Data.Length; offset++)
+                    {
+                        if (patternMask.Where((m, b) => m == 'x' && Data[b] != Data[b + offset]).Any())
+                            continue;
+                    }
+                    break;
+            }
+
+            return offset;
+        }
+
         private PatternScanResult FindFunctionPattern(IMemoryPattern pattern)
         {
-            var patternData = Data;
-            var patternDataLength = patternData.Length;
-
-            var offset = Utilities.BoyerMooreHorspool.IndexOf(Data, pattern.GetBytes().ToArray());
-
+            var offset = GetOffset(pattern);
             if (offset != -1)
             {
                 return new PatternScanResult
@@ -61,12 +83,8 @@ namespace Process.NET.Patterns
 
         private PatternScanResult FindDataPattern(IMemoryPattern pattern)
         {
-            var patternData = Data;
-            var patternBytes = pattern.GetBytes();
-            var patternMask = pattern.GetMask();
-
             var result = new PatternScanResult();
-            var offset = Utilities.BoyerMooreHorspool.IndexOf(Data, pattern.GetBytes().ToArray());
+            var offset = GetOffset(pattern);
 
             if ( offset != -1)
             {

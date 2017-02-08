@@ -19,7 +19,7 @@ namespace Process.NET.Test.Patterns
             var result = scanner.Find(pattern);
             Assert.IsTrue(result.Found, "Failed to find signature in TestLocalDwordDataPattern.");
             Assert.IsNotNull(result.Offset, "Offset was null in TestLocalDwordDataPattern.");
-            Assert.IsNotNull(result.ReadAddress, "Failed to read from retrieved pattern address in TestLocalDwordDataPattern.")
+            Assert.IsNotNull(result.ReadAddress, "Failed to read from retrieved pattern address in TestLocalDwordDataPattern.");
         }
 
         [Test]
