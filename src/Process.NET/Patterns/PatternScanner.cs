@@ -9,11 +9,15 @@ namespace Process.NET.Patterns
         private readonly IProcessModule _module;
         private readonly int _offsetFromBaseAddress;
 
-        public PatternScanner(IProcessModule module)
+        private static readonly PatternScanResult EmptyPatternScanResult = new PatternScanResult
         {
-            new PatternScanner(module, 0);
-        }
+            BaseAddress = IntPtr.Zero,
+            ReadAddress = IntPtr.Zero,
+            Offset = 0,
+            Found = false
+        };
 
+        public PatternScanner(IProcessModule module) : this(module, 0) { }
         public PatternScanner(IProcessModule module, int offsetFromBaseAddress)
         {
             _module = module;
@@ -25,9 +29,14 @@ namespace Process.NET.Patterns
 
         public PatternScanResult Find(IMemoryPattern pattern)
         {
-            return pattern.PatternType == MemoryPatternType.Function
-                ? FindFunctionPattern(pattern)
-                : FindDataPattern(pattern);
+            switch(pattern.PatternType)
+            {
+                case MemoryPatternType.Function:
+                    return FindFunctionPattern(pattern);
+                case MemoryPatternType.Data:
+                    return FindDataPattern(pattern);
+            }
+            throw new NotImplementedException("PatternScanner encountered an unknown MemoryPatternType " + pattern.PatternType + ".");
         }
 
         private PatternScanResult FindFunctionPattern(IMemoryPattern pattern)
@@ -47,13 +56,7 @@ namespace Process.NET.Patterns
                     Found = true
                 };
             }
-            return new PatternScanResult
-            {
-                BaseAddress = IntPtr.Zero,
-                ReadAddress = IntPtr.Zero,
-                Offset = 0,
-                Found = false
-            };
+            return EmptyPatternScanResult;
         }
 
         private PatternScanResult FindDataPattern(IMemoryPattern pattern)
@@ -75,11 +78,7 @@ namespace Process.NET.Patterns
                 return result;
             }
             // If this is reached, the pattern was not found.
-            result.Found = false;
-            result.Offset = 0;
-            result.ReadAddress = IntPtr.Zero;
-            result.BaseAddress = IntPtr.Zero;
-            return result;
+            return EmptyPatternScanResult;
         }
     }
 }
