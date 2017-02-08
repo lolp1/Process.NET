@@ -100,6 +100,7 @@
     <Compile Include="ProcessSharp.cs" />
     <Compile Include="Extensions\NativeExtensions.cs" />
     <Compile Include="Utilities\BoyerMooreHorspool.cs" />
+    <Compile Include="Utilities\Naive.cs" />
     <Compile Include="Windows\Keyboard\KeyboardHookEventArgs.cs" />
     <Compile Include="Windows\Message.cs" />
     <Compile Include="Windows\Mouse\MouseHookEventArgs.cs" />

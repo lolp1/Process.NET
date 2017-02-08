@@ -34,7 +34,7 @@ namespace Process.NET.Test.Patterns
             var pattern = new DwordPattern("E8 ? ? ? ? 83 C4"); //Most common x86 signature. CALL DWORD ADD ESP, X.
             var result = scanner.Find(pattern);
             Assert.IsTrue(result.Found, "Failed to find signature in TestRemoteDwordPattern.");
-            Assert.IsNotNull(result.Offset, "Offset was null in TestRemoteDwordPattern.");
+            Assert.That(result.Offset > -1, "TestRemoteNaivePattern offset was not greater than -1.");
         }
 
         [Test]
@@ -50,7 +50,39 @@ namespace Process.NET.Test.Patterns
             var pattern = new DwordPattern("E8 ? ? ? ? 83 C4"); //Most common x86 signature. CALL DWORD ADD ESP, X.
             var result = scanner.Find(pattern);
             Assert.IsTrue(result.Found, "Failed to find signature in TestRemoteDwordPattern.");
-            Assert.IsNotNull(result.Offset, "Offset was null in TestRemoteDwordPattern.");
+            Assert.That(result.Offset > -1, "TestRemoteNaivePattern offset was not greater than -1.");
+        }
+
+        [Test]
+        public void TestUnfindableBMHPattern()
+        {
+            System.Diagnostics.Process[] processes = System.Diagnostics.Process.GetProcessesByName("notepad++");
+            Assert.Greater(processes.Length, 0, "Failed to find a running instance of Notepad++.");
+            var process = new ProcessSharp(processes[0], Process.NET.Memory.MemoryType.Remote);
+            var module = process.ModuleFactory.MainModule;
+            var scanner = new PatternScanner(module, PatternScannerAlgorithm.BoyerMooreHorspool);
+            Assert.NotNull(scanner, "Failed to instantiate PatternScanner object.");
+            Assert.NotNull(scanner.Data, "Failed to read MainModule from Notepad++ in to Data object.");
+            var pattern = new DwordPattern("69 42 06 66 11 22 33 44 55 66 77 88 99"); //Most common x86 signature. CALL DWORD ADD ESP, X.
+            var result = scanner.Find(pattern);
+            Assert.IsFalse(result.Found, "TestUnfindableBMHPattern yielded an offset when it wasn't supposed to.");
+            Assert.That(result.Offset == 0, "Offset was not special number 0");
+        }
+
+        [Test]
+        public void TestUnfindableNaivePattern()
+        {
+            System.Diagnostics.Process[] processes = System.Diagnostics.Process.GetProcessesByName("notepad++");
+            Assert.Greater(processes.Length, 0, "Failed to find a running instance of Notepad++.");
+            var process = new ProcessSharp(processes[0], Process.NET.Memory.MemoryType.Remote);
+            var module = process.ModuleFactory.MainModule;
+            var scanner = new PatternScanner(module, PatternScannerAlgorithm.Naive);
+            Assert.NotNull(scanner, "Failed to instantiate PatternScanner object.");
+            Assert.NotNull(scanner.Data, "Failed to read MainModule from Notepad++ in to Data object.");
+            var pattern = new DwordPattern("69 42 06 66 11 22 33 44 55 66 77 88 99"); //Most common x86 signature. CALL DWORD ADD ESP, X.
+            var result = scanner.Find(pattern);
+            Assert.IsFalse(result.Found, "TestUnfindableNaivePattern yielded an offset when it wasn't supposed to.");
+            Assert.That(result.Offset == 0, "Offset was not special number 0");
         }
     }
 }

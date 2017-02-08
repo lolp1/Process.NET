@@ -40,29 +40,21 @@ namespace Process.NET.Patterns
                 case MemoryPatternType.Data:
                     return FindDataPattern(pattern);
             }
-            throw new NotImplementedException("PatternScanner encountered an unknown MemoryPatternType " + pattern.PatternType + ".");
+            throw new NotImplementedException("PatternScanner encountered an unknown MemoryPatternType: " + pattern.PatternType + ".");
         }
+
+        
 
         private int GetOffset(IMemoryPattern pattern)
         {
-            var offset = -1;
-
             switch(_algorithm)
             {
                 case PatternScannerAlgorithm.BoyerMooreHorspool:
-                    offset = Utilities.BoyerMooreHorspool.IndexOf(Data, pattern.GetBytes().ToArray());
-                    break;
+                    return Utilities.BoyerMooreHorspool.IndexOf(Data, pattern.GetBytes().ToArray());
                 case PatternScannerAlgorithm.Naive:
-                    var patternMask = pattern.GetMask();
-                    for (offset = 0; offset < Data.Length; offset++)
-                    {
-                        if (patternMask.Where((m, b) => m == 'x' && Data[b] != Data[b + offset]).Any())
-                            continue;
-                    }
-                    break;
+                    return Utilities.Naive.GetIndexOf(pattern, Data, _module);
             }
-
-            return offset;
+            throw new NotImplementedException("GetOffset encountered an unknown PatternScannerAlgorithm: " + _algorithm + ".");
         }
 
         private PatternScanResult FindFunctionPattern(IMemoryPattern pattern)
