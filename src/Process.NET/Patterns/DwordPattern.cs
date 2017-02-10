@@ -11,11 +11,13 @@ namespace Process.NET.Patterns
 
         public readonly string PatternText;
 
-        public DwordPattern(string dwordPattern)
+        public DwordPattern(string dwordPattern) : this(dwordPattern, PatternScannerAlgorithm.Naive) { }
+        public DwordPattern(string dwordPattern, PatternScannerAlgorithm algorithm)
         {
             PatternText = dwordPattern;
             PatternType = MemoryPatternType.Function;
             Offset = 0;
+            Algorithm = algorithm;
             _bytes = GetBytesFromDwordPattern(dwordPattern);
             _mask = GetMaskFromDwordPattern(dwordPattern);
         }
@@ -32,6 +34,7 @@ namespace Process.NET.Patterns
 
         public int Offset { get; }
         public MemoryPatternType PatternType { get; }
+        public PatternScannerAlgorithm Algorithm { get; }
 
         private static string GetMaskFromDwordPattern(string pattern)
         {

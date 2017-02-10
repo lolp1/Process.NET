@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Process.NET.Modules;
+using Process.NET.Utilities;
 
 namespace Process.NET.Patterns
 {
@@ -8,7 +9,6 @@ namespace Process.NET.Patterns
     {
         private readonly IProcessModule _module;
         private readonly int _offsetFromBaseAddress;
-        private readonly PatternScannerAlgorithm _algorithm;
 
         private static readonly PatternScanResult EmptyPatternScanResult = new PatternScanResult
         {
@@ -18,14 +18,11 @@ namespace Process.NET.Patterns
             Found = false
         };
 
-        public PatternScanner(IProcessModule module) : this(module, 0, PatternScannerAlgorithm.BoyerMooreHorspool) { }
-        public PatternScanner(IProcessModule module, int offsetFromBaseAddress) : this(module, offsetFromBaseAddress, PatternScannerAlgorithm.BoyerMooreHorspool) { }
-        public PatternScanner(IProcessModule module, PatternScannerAlgorithm algorithm) : this(module, 0, algorithm) { }
-        public PatternScanner(IProcessModule module, int offsetFromBaseAddress, PatternScannerAlgorithm algorithm)
+        public PatternScanner(IProcessModule module) : this(module, 0) { }
+        public PatternScanner(IProcessModule module, int offsetFromBaseAddress)
         {
             _module = module;
             _offsetFromBaseAddress = offsetFromBaseAddress;
-            _algorithm = algorithm;
             Data = module.Read(_offsetFromBaseAddress, _module.Size - _offsetFromBaseAddress);
         }
 
@@ -47,14 +44,14 @@ namespace Process.NET.Patterns
 
         private int GetOffset(IMemoryPattern pattern)
         {
-            switch(_algorithm)
+            switch(pattern.Algorithm)
             {
                 case PatternScannerAlgorithm.BoyerMooreHorspool:
                     return Utilities.BoyerMooreHorspool.IndexOf(Data, pattern.GetBytes().ToArray());
                 case PatternScannerAlgorithm.Naive:
                     return Utilities.Naive.GetIndexOf(pattern, Data, _module);
             }
-            throw new NotImplementedException("GetOffset encountered an unknown PatternScannerAlgorithm: " + _algorithm + ".");
+            throw new NotImplementedException("GetOffset encountered an unknown PatternScannerAlgorithm: " + pattern.Algorithm + ".");
         }
 
         private PatternScanResult FindFunctionPattern(IMemoryPattern pattern)

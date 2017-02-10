@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -11,12 +12,15 @@ namespace Process.NET.Patterns
 
         public readonly string PatternText;
 
-        public DwordPatternData(string pattern) : this(pattern, 0) { }
-        public DwordPatternData(string pattern, int offset)
+        public DwordPatternData(string pattern) : this(pattern, 0, PatternScannerAlgorithm.Naive) { }
+        public DwordPatternData(string pattern, int offset) : this(pattern, offset, PatternScannerAlgorithm.Naive) { }
+        public DwordPatternData(string pattern, PatternScannerAlgorithm algorithm) : this(pattern, 0, algorithm) { }
+        public DwordPatternData(string pattern, int offset, PatternScannerAlgorithm algorithm)
         {
             PatternText = pattern;
             PatternType = MemoryPatternType.Data;
             Offset = offset;
+            Algorithm = algorithm;
             _bytes = GetBytesFromDwordPattern(pattern);
             _mask = GetMaskFromDwordPattern(pattern);
         }
@@ -33,6 +37,7 @@ namespace Process.NET.Patterns
 
         public int Offset { get; }
         public MemoryPatternType PatternType { get; }
+        public PatternScannerAlgorithm Algorithm { get; }
 
         private static string GetMaskFromDwordPattern(string pattern)
         {
