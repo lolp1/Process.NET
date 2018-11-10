@@ -1,25 +1,28 @@
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 
 namespace Process.NET.Patterns
 {
-    public class DwordPattern : IMemoryPattern
+    public class DwordPatternData : IMemoryPattern
     {
         private readonly byte[] _bytes;
         private readonly string _mask;
 
         public readonly string PatternText;
 
-        public DwordPattern(string dwordPattern) : this(dwordPattern, PatternScannerAlgorithm.Naive) { }
-        public DwordPattern(string dwordPattern, PatternScannerAlgorithm algorithm)
+        public DwordPatternData(string pattern) : this(pattern, 0, PatternScannerAlgorithm.Naive) { }
+        public DwordPatternData(string pattern, int offset) : this(pattern, offset, PatternScannerAlgorithm.Naive) { }
+        public DwordPatternData(string pattern, PatternScannerAlgorithm algorithm) : this(pattern, 0, algorithm) { }
+        public DwordPatternData(string pattern, int offset, PatternScannerAlgorithm algorithm)
         {
-            PatternText = dwordPattern;
-            PatternType = MemoryPatternType.Function;
-            Offset = 0;
+            PatternText = pattern;
+            PatternType = MemoryPatternType.Data;
+            Offset = offset;
             Algorithm = algorithm;
-            _bytes = GetBytesFromDwordPattern(dwordPattern);
-            _mask = GetMaskFromDwordPattern(dwordPattern);
+            _bytes = GetBytesFromDwordPattern(pattern);
+            _mask = GetMaskFromDwordPattern(pattern);
         }
 
         public IList<byte> GetBytes()
