@@ -1,129 +1,61 @@
 using System;
 using System.Collections.Generic;
-using Process.NET.Extensions;
 using Process.NET.Memory;
-using Process.NET.Utilities;
 
 namespace Process.NET.Applied.Detours
 {
     /// <summary>
-    ///     A manager class to handle function detours, and hooks.
-    ///     <remarks>All credits to the GreyMagic library written by Apoc @ www.ownedcore.com</remarks>
+    ///     Base class for detour operations and properties. This base class exist
+    ///     so that detours can be implemented for different processor architectures
+    ///     (such as x86 and x64), operating systems, etc.
     /// </summary>
-    public class Detour : IComplexApplied
+    /// <seealso cref="T:Process.NET.Applied.IComplexApplied" />
+    public abstract class Detour : IComplexApplied
     {
         /// <summary>
-        ///     This var is not used within the detour itself. It is only here
-        ///     to keep a reference, to avoid the GC from collecting the delegate instance!
+        ///     Calls the original function, and returns a return value.
         /// </summary>
-        // ReSharper disable once NotAccessedField.Local
-        private readonly Delegate _hookDelegate;
-
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="Detour" /> class.
-        /// </summary>
-        /// <param name="target">The target delegate.</param>
-        /// <param name="hook">The hook delegate.</param>
-        /// <param name="identifier"></param>
-        /// <param name="memory">The <see cref="MemoryPlus" /> instance.</param>
-        /// <param name="ignoreRules"></param>
-        public Detour(Delegate target, Delegate hook, string identifier, IMemory memory,
-            bool ignoreRules = false)
+        /// <param name="args">
+        ///     The arguments to pass. If it is a ' <see langword="void" /> '
+        ///     argument list, you MUST pass ' <see langword="null" /> '.
+        /// </param>
+        /// <returns>
+        ///     An object containing the original functions return value.
+        /// </returns>
+        public object CallOriginal(params object[] args)
         {
-            ProcessMemory = memory;
-            Identifier = identifier;
-            IgnoreRules = ignoreRules;
-
-            TargetDelegate = target;
-            Target = target.ToFunctionPtr();
-
-            _hookDelegate = hook;
-            HookPointer = hook.ToFunctionPtr(); //target
-
-            //Store the original bytes
-            Original = new List<byte>();
-            Original.AddRange(memory.Read(Target, 6));
-
-            //Setup the detour bytes
-            New = new List<byte> {0x68};
-
-            var bytes = IntPtr.Size == 4 ? BitConverter.GetBytes(HookPointer.ToInt32()) : BitConverter.GetBytes(HookPointer.ToInt64());
-
-     
-            New.AddRange(bytes);
-            New.Add(0xC3);
+            Disable();
+            var callOriginal = TargetDelegate?.DynamicInvoke(args);
+            Enable();
+            return callOriginal;
         }
 
         /// <summary>
-        ///     The reference of the <see cref="ProcessMemory" /> object.
+        ///     Disables <see langword="this" /> instance.
         /// </summary>
-        private IMemory ProcessMemory { get; }
+        public void Disable() => Disable(false);
 
         /// <summary>
-        ///     Gets the pointer to be hooked/being hooked.
+        ///     Removes <see langword="this" /> <see cref="Detour" /> from memory,
+        ///     by reverting the modified bytes back to their original values.
         /// </summary>
-        /// <value>The pointer to be hooked/being hooked.</value>
-        public IntPtr HookPointer { get; }
+        public void Disable(bool disableDueToRules)
+        {
+            if (IgnoreRules & disableDueToRules)
+            {
+                return;
+            }
+
+            DisabledDueToRules = disableDueToRules;
+            ProcessMemory.Write(Target, Original.ToArray());
+            IsEnabled = false;
+        }
 
         /// <summary>
-        ///     Gets the new bytes.
-        /// </summary>
-        /// <value>The new bytes.</value>
-        public List<byte> New { get; }
-
-        /// <summary>
-        ///     Gets the original bytes.
-        /// </summary>
-        /// <value>The original bytes.</value>
-        public List<byte> Original { get; }
-
-        /// <summary>
-        ///     Gets the pointer of the target function.
-        /// </summary>
-        /// <value>The pointer of the target function.</value>
-        public IntPtr Target { get; }
-
-        /// <summary>
-        ///     Gets the targeted delegate instance.
-        /// </summary>
-        /// <value>The targeted delegate instance.</value>
-        public Delegate TargetDelegate { get; }
-
-        /// <summary>
-        ///     Get a value indicating if the detour has been disabled due to a running AntiCheat scan
-        /// </summary>
-        public bool DisabledDueToRules { get; set; }
-
-        /// <summary>
-        ///     Geta s value indicating if the detour should never be disabled by the AntiCheat scan logic
-        /// </summary>
-        public bool IgnoreRules { get; }
-
-        /// <summary>
-        ///     States if the detour is currently enabled.
-        /// </summary>
-        public bool IsEnabled { get; set; }
-
-        /// <summary>
-        ///     The name of the detour.
-        /// </summary>
-        /// <value>The name of the detour.</value>
-        public string Identifier { get; }
-
-        /// <summary>
-        ///     Gets a value indicating whether the <see cref="Detour" /> is disposed.
-        /// </summary>
-        public bool IsDisposed { get; internal set; }
-
-        /// <summary>
-        ///     Gets a value indicating whether the <see cref="Detour" /> must be disposed when the Garbage Collector collects the
-        ///     object.
-        /// </summary>
-        public bool MustBeDisposed { get; set; } = true;
-
-        /// <summary>
-        ///     Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources. In this
-        ///     case, it will disable the <see cref="Detour" /> instance and suppress the finalizer.
+        ///     Performs application-defined tasks associated with freeing,
+        ///     releasing, or resetting unmanaged resources. In this case, it will
+        ///     disable the <see cref="Detour64" /> instance and suppress the
+        ///     finalizer.
         /// </summary>
         public void Dispose()
         {
@@ -132,45 +64,25 @@ namespace Process.NET.Applied.Detours
                 return;
             }
 
-            IsDisposed = true;
-            if (IsEnabled)
+            if (IsEnabled && MustBeDisposed)
             {
                 Disable();
             }
+
             GC.SuppressFinalize(this);
         }
 
-        public void Enable()
-        {
-            Enable(false);
-        }
-
-        public void Disable()
-        {
-            Disable(false);
-        }
+        /// <summary>
+        ///     Enables <see langword="this" /> instance.
+        /// </summary>
+        public void Enable() => Enable(false);
 
         /// <summary>
-        ///     Removes this Detour from memory. (Reverts the bytes back to their originals.)
+        ///     Applies <see langword="this" /> <see cref="Detour" /> to memory.
+        ///     (Writes new bytes to memory)
         /// </summary>
-        /// <returns></returns>
-        public void Disable(bool disableDueToRules)
-        {
-            if (IgnoreRules && disableDueToRules)
-            {
-                return;
-            }
-
-            DisabledDueToRules = disableDueToRules;
-
-            ProcessMemory.Write(Target, Original.ToArray());
-            IsEnabled = false;
-        }
-
-        /// <summary>
-        ///     Applies this Detour to memory. (Writes new bytes to memory)
-        /// </summary>
-        /// <returns></returns>
+        /// <returns>
+        /// </returns>
         public void Enable(bool disableDueToRules)
         {
             if (disableDueToRules && DisabledDueToRules)
@@ -185,7 +97,6 @@ namespace Process.NET.Applied.Detours
                 {
                     return;
                 }
-
                 if (IsEnabled)
                 {
                     return;
@@ -196,28 +107,109 @@ namespace Process.NET.Applied.Detours
             }
         }
 
+        /// <summary>
+        ///     Get a value indicating if the detour has been disabled due to a the
+        ///     specified rules.
+        /// </summary>
+        public bool DisabledDueToRules { get; set; }
+
+        /// <summary>
+        ///     Gets the pointer to be hooked/being hooked.
+        /// </summary>
+        /// <value>
+        ///     The pointer to be hooked/being hooked.
+        /// </value>
+        public IntPtr HookPointer { get; protected set; }
+
+        /// <summary>
+        ///     The name of the detour.
+        /// </summary>
+        /// <value>
+        ///     The name of the detour.
+        /// </value>
+        public string Identifier { get; protected set; }
+
+        /// <summary>
+        ///     Gets a value indicating if the detour should never be disabled by
+        ///     the rules logic.
+        /// </summary>
+        public bool IgnoreRules { get; protected set; }
+
+        /// <summary>
+        ///     Gets a value indicating whether the <see cref="Detour64" /> is
+        ///     disposed.
+        /// </summary>
+        public bool IsDisposed { get; internal set; }
+
+        /// <summary>
+        ///     States if the detour is currently enabled.
+        /// </summary>
+        public bool IsEnabled { get; set; }
+
+        /// <summary>
+        ///     Gets a value indicating whether the <see cref="Detour64" /> must be
+        ///     disposed when the Garbage Collector collects the object.
+        /// </summary>
+        public bool MustBeDisposed { get; set; } = true;
+
+        /// <summary>
+        ///     Gets the new bytes.
+        /// </summary>
+        /// <value>
+        ///     The new bytes.
+        /// </value>
+        public List<byte> New { get; protected set; }
+
+        /// <summary>
+        ///     Gets the original bytes.
+        /// </summary>
+        /// <value>
+        ///     The original bytes.
+        /// </value>
+        public List<byte> Original { get; protected set; }
+
+        /// <summary>
+        ///     <para>
+        ///         The reference of the
+        ///         <see cref="Process.NET.Applied.Detours.Detour.ProcessMemory" />
+        ///     </para>
+        ///     <para>object.</para>
+        /// </summary>
+        public IMemory ProcessMemory { get; protected set; }
+
+        /// <summary>
+        ///     Gets the pointer of the target function.
+        /// </summary>
+        /// <value>
+        ///     The pointer of the target function.
+        /// </value>
+        public IntPtr Target { get; protected set; }
+
+        /// <summary>
+        ///     Gets the targeted <see langword="delegate" /> instance.
+        /// </summary>
+        /// <value>
+        ///     The targeted <see langword="delegate" /> instance.
+        /// </value>
+        public Delegate TargetDelegate { get; protected set; }
+
+        /// <summary>
+        ///     Gets or sets the hook <see langword="delegate" /> .
+        /// </summary>
+        /// <value>
+        ///     The hook delegate.
+        /// </value>
+        protected Delegate HookDelegate { get; set; }
+
+        /// <summary>
+        ///     Finalizes an instance of the <see cref="Detour" /> class.
+        /// </summary>
         ~Detour()
         {
-            if (MustBeDisposed)
+            if (!IsDisposed)
             {
                 Dispose();
             }
-        }
-
-        /// <summary>
-        ///     Calls the original function, and returns a return value.
-        /// </summary>
-        /// <param name="args">
-        ///     The arguments to pass. If it is a 'void' argument list,
-        ///     you MUST pass 'null'.
-        /// </param>
-        /// <returns>An object containing the original functions return value.</returns>
-        public object CallOriginal(params object[] args)
-        {
-            Disable();
-            var ret = TargetDelegate.DynamicInvoke(args);
-            Enable();
-            return ret;
         }
     }
 }

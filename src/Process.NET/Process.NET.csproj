@@ -86,6 +86,8 @@
     <Compile Include="Applied\AppliedManager.cs" />
     <Compile Include="Applied\ComplexAppliedManager.cs" />
     <Compile Include="Applied\Detours\Detour.cs" />
+    <Compile Include="Applied\Detours\Detour32.cs" />
+    <Compile Include="Applied\Detours\Detour64.cs" />
     <Compile Include="Applied\Detours\DetourManager.cs" />
     <Compile Include="Applied\Patches\Patch.cs" />
     <Compile Include="Applied\Patches\PatchManager.cs" />
